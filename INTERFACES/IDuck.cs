@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CORE;
+
+namespace INTERFACES
+{
+    
+    public interface IDuck
+    {
+
+        string Name { get; set; }
+        int ID { get; set; }
+        int ProducerID { get; set; }
+        double Price { get; set; }
+        string Photo {  get; set; }
+        string Description { get; set; }
+        Category Category { get; set; }
+
+    }
+}
