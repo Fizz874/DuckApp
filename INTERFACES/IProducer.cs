@@ -1,4 +1,4 @@
-﻿namespace INTERFACES
+﻿namespace Strzelecki_Baranowski.DuckApp.INTERFACES
 {
     public interface IProducer
     {

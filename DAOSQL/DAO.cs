@@ -1,5 +1,5 @@
 ﻿using CORE;
-using INTERFACES;
+using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.DAO
 {

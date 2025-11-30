@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CORE;
-using INTERFACES;
+using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.DAO
 {

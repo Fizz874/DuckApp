@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CORE;
 
-namespace INTERFACES
+namespace Strzelecki_Baranowski.DuckApp.INTERFACES
 {
     public interface IDataAccessObject
     {
