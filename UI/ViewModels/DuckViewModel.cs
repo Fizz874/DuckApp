@@ -32,6 +32,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 
 
 
+
             _name = _duck?.Name ?? string.Empty;
             _iD = _duck?.ID ?? -1;
             _producerID = _duck?.ProducerID ?? 0;
@@ -39,6 +40,25 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             _photo = _duck?.Photo ?? string.Empty;
             _price = _duck?.Price ?? 0.0;
             _description = _duck?.Description ?? string.Empty;
+
+
+            //if (_producerVM != null)
+            //{
+            //    _producerVM.PropertyChanged += Producer_PropertyChanged;
+            //}
+
+            if (_producerVM != null)
+            {
+                _producerVM.PropertyChanged += (sender, args) =>
+                {
+                    if (args.PropertyName == nameof(ProducerViewModel.Name))
+                    {
+                        // Aktualizujemy nasze "zdjęcie" (pole tekstowe)
+                        ProducerName = _producerVM.Name;
+                    }
+                };
+            }
+
 
 
         }
@@ -50,7 +70,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         [ObservableProperty]
         private int _producerID;
         [ObservableProperty]
-        private string _producerName; 
+        private string _producerName;
         [ObservableProperty]
         private string _photo;
         [ObservableProperty]
@@ -60,10 +80,47 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         [ObservableProperty]
         private Category _category;
 
+        //public string ProducerName => _producerVM?.Name ?? "Brak producenta";
+
+
+        //private void Producer_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        //{
+        //    // Jeśli zmieniła się nazwa producenta...
+        //    if (e.PropertyName == nameof(ProducerViewModel.Name))
+        //    {
+        //        // ...zaktualizuj naszą lokalną kopię (to odświeży widok Hyperlinku)
+        //        ProducerName = _producerVM!.Name;
+        //    }
+        //}
+
+
+
         public DuckViewModel Clone()
         {
             return (DuckViewModel) this.MemberwiseClone();
         }
+
+        public void UpdateFrom(DuckViewModel source)
+        {
+
+            this.Name = source.Name;
+            this.Price = source.Price;
+            this.Description = source.Description;
+            this.ProducerID = source.ProducerID;
+            //TODO - zmiana producerId powinna powodować zmianę _producerVM
+
+            this.ProducerName = source.ProducerName;
+
+            if (_duck != null)
+            {
+                this._duck.Name = source.Name;
+                this._duck.Price = source.Price;
+                this._duck.Description = source.Description;
+                this._duck.ProducerID = source.ProducerID;
+            }
+
+        }
+
 
         public IDuck? GetDuck()
         {

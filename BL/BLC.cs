@@ -61,7 +61,7 @@ namespace Strzelecki_Baranowski.DuckApp.BL
         }
 
 
-        public void UpdateDuck(IDuck duck)
+        public void UpdateDuck(IDuck duck) //TODO upewnić się że foto wskazuje w dobre miejsce
         {
             _dao.UpdateDuck(duck.ID, duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
 

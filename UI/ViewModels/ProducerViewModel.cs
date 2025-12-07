@@ -34,6 +34,20 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             return _producer;
         }
 
+        public void UpdateFrom(ProducerViewModel source)
+        {
+
+            this.Name = source.Name;
+            this.Website = source.Website;
+            
+            if (_producer != null)
+            {
+                _producer.Name = source.Name;
+                _producer.Website = source.Website;
+            }
+        }
+
+
 
         [ObservableProperty]
         private string _name;

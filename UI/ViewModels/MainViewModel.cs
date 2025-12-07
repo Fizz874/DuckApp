@@ -113,7 +113,6 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                 DummyObject = new ProducerViewModel(null);
             }
 
-            //Kopiowanie wartości do dummy
             EditVisibility = Visibility.Visible;
             DetailsVisibility = Visibility.Collapsed;
         }
@@ -154,7 +153,6 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         [RelayCommand(CanExecute = nameof(CanEdit))]
         private void EditItem()
         {
-            //rozróżnić czy producer czy kaczka
             if (SelectedItem == null) return;
             if (SelectedItem.GetType() == typeof(DuckViewModel))
             {
@@ -195,18 +193,21 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         }
 
         [RelayCommand]
-        private void Save() //TODO dlaczego nie działa dodawanie + dlaczego utrata focucu nie działa
+        private void Save() //TODO dlaczego utrata focucu nie działa
         {
             try
             {
 
-              
-
-                if (SelectedItem == null) return;
-                if (SelectedItem.GetType() == typeof(DuckViewModel))
+                switch (DummyObject)
                 {
+                    
+                       
 
+                //if (SelectedItem == null) return;
+                //if (SelectedItem.GetType() == typeof(DuckViewModel))
+                //{
 
+                case DuckViewModel duckVM:
                     var editedDuck = DummyObject as DuckViewModel;
                     if (editedDuck == null) return;
 
@@ -214,16 +215,18 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                     {
                         int iD = _businessLogic.AddNewDuck(editedDuck.Name, editedDuck.ProducerID, editedDuck.Price, editedDuck.Photo, editedDuck.Description, editedDuck.Category );
                         
-                        editedDuck.ID = iD;
+                        editedDuck.ID = iD; //TODO trzebaby aktualizować IDuck _duck chyba że się go zupełnie pozbywamy
 
                         DuckVM.Ducks.Add( editedDuck );
+
 
                     } else
                     {
 
                     
 
-                        _businessLogic.UpdateDuck(editedDuck.GetDuck()); //TODO zaktualizować IDUCK'a a nie tylko VM
+                        _businessLogic.UpdateDuck(editedDuck.GetDuck()); 
+
 
 
                         var ducks = DuckVM.Ducks;
@@ -231,15 +234,25 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                         {
                             if (ducks[i].ID == editedDuck.ID)
                             {
-                                ducks[i] = editedDuck;
+                                    ducks[i].UpdateFrom(editedDuck);
                                 break;
                             }
                         }
 
-                    }
-                }
-                else
-                {
+
+
+                        }
+
+                        SelectedItem = editedDuck;
+                        ShowDucks();
+
+
+                        break;
+
+                //}
+                //else
+                //{
+                case ProducerViewModel producerVM:
 
                     var editedProd = DummyObject as ProducerViewModel;
                     if (editedProd == null) return;
@@ -249,9 +262,9 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                     {
                         int iD = _businessLogic.AddNewProducer(editedProd.Name, editedProd.Website);
 
-                        editedProd.ID = iD;
+                        editedProd.ID = iD; //TODO trzeba by aktualizować  _producer chyba że się go zupełnie pozbywamy (wtedy trzeba przerobić update w BLC)
 
-                        ProducerVM.Producers.Add(editedProd);
+                            ProducerVM.Producers.Add(editedProd);
 
                     }
                     else
@@ -267,12 +280,22 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                         {
                             if (prods[i].ID == editedProd.ID)
                             {
-                                prods[i] = editedProd;
+                                prods[i].UpdateFrom(editedProd);
                                 break;
                             }
                         }
                     }
+
+
+                        SelectedItem = editedProd;
+                        ShowProducers();
+
+                        break;
                 }
+
+
+               
+
 
                 DetailsVisibility = Visibility.Visible;
                 EditVisibility = Visibility.Collapsed;
