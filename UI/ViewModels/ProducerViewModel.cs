@@ -2,44 +2,47 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.UI
 {
-    public class ProducerViewModel : INotifyPropertyChanged
+    public partial class ProducerViewModel : ObservableObject
     {
 
-        private IProducer _producer;
-        public event PropertyChangedEventHandler? PropertyChanged;
+        private IProducer? _producer;
 
-
-        public ProducerViewModel(IProducer producer)
+        public ProducerViewModel(IProducer? producer)
         {
-            _producer = producer;
+            _producer = producer ;
+            _name = _producer?.Name ?? string.Empty;
+            _iD = _producer?.ID ?? -1;
+            _website = _producer?.Website ?? string.Empty;
+
+        }
+
+        public ProducerViewModel Clone()
+        {
+            return (ProducerViewModel)this.MemberwiseClone();
+        }
+
+        public IProducer GetProd()
+        {
+            return _producer;
         }
 
 
-        public string Name
-        {
-            get { return _producer.Name; }
-            set
-            {
-                if (_producer.Name != value && _producer.Name != null)
-                {
-                    _producer.Name = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs("Name"));
-                        //PropertyChanged(this, new PropertyChangedEventArgs("DisplayText"));
-                    }
-                }
-            }
-        }
+        [ObservableProperty]
+        private string _name;
 
-        public int ID => _producer.ID;
-        public string Website => _producer.Website;
+        [ObservableProperty]
+        private int _iD;
+
+        [ObservableProperty]
+        public string _website;
 
 
     }

@@ -1,5 +1,6 @@
 ﻿
 using System.Reflection;
+using CORE;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.BL
@@ -59,21 +60,65 @@ namespace Strzelecki_Baranowski.DuckApp.BL
             return _dao.GetProducers();
         }
 
-        public IProducer GetProducer(int id)
+
+        public void UpdateDuck(IDuck duck)
         {
-            var producers = _dao.GetProducers();
-            var found = producers.FirstOrDefault(x => x.ID == id);
+            _dao.UpdateDuck(duck.ID, duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
 
-            if (found == null)
-                throw new KeyNotFoundException($"Producer with ID {id} not found."); //TODO obsługa takich błędów w warstwie UI - co wyświetlić
-
-            return found;
         }
 
-        public IEnumerable<IDuck> getAllDucksFromProducer(int id)
+        public void UpdateProducer(IProducer producer)
         {
-            return _dao.GetDucks().Where(x => x.ID == id);
+            _dao.UpdateProducer(producer.ID, producer.Name, producer.Website);
+
         }
+
+        public int AddNewDuck(string name,
+            int producerID,
+            double price,
+            string photo,
+            string description,
+            Category category)
+        {
+
+            return _dao.AddDuck(name, producerID, price, photo, description, category);
+
+        }
+
+        public int AddNewProducer(string name, string website)
+        {
+            return _dao.AddProducer(name, website);
+
+        }
+
+
+        public void DeleteDuck(int id)
+        {
+            _dao.DeleteDuck(id);
+        }
+
+
+        public void DeleteProducer(int id)
+        {
+            _dao.DeleteProducer(id);
+        }
+
+
+        //public IProducer GetProducer(int id)
+        //{
+        //    var producers = _dao.GetProducers();
+        //    var found = producers.FirstOrDefault(x => x.ID == id);
+
+        //    if (found == null)
+        //        throw new KeyNotFoundException($"Producer with ID {id} not found."); //TODO obsługa takich błędów w warstwie UI - co wyświetlić
+
+        //    return found;
+        //}
+
+        //public IEnumerable<IDuck> getAllDucksFromProducer(int id)
+        //{
+        //    return _dao.GetDucks().Where(x => x.ID == id);
+        //}
 
 
 

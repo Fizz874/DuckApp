@@ -5,7 +5,9 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Input;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.UI
@@ -25,4 +27,5 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         }
 
     }
-}
+
+    }

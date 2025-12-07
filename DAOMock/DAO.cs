@@ -23,7 +23,7 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
             { 
                 new Duck() { Name= "Minecraf - Zombie (Mini)", ID=1, ProducerID=1, Price=9.99,
                     Description="He crawls straight out of the pixelated world of Minecraft and into your bath paradise: the Mini Bath Duck Minecraft Zombie! With his angular design, green complexion and typical blocky look, this undead creature is probably the most charming bath guest you've ever had. Instead of brains, he prefers to hunt for soap bubbles – but be careful, his duck friends might still get a fright!",
-                    Photo="https://www.duckshop.de/media/image/ec/98/6b/Minecraft_-_Zombie_Mini_173430744_200x200.jpg",
+                    Photo= /*"https://www.duckshop.de/media/image/ec/98/6b/Minecraft_-_Zombie_Mini_173430744_200x200.jpg"*/"photos/1.jpg",
                     Category=Category.VideoGames 
                 }
             };
@@ -31,15 +31,15 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
         }
 
         public int AddDuck(string name = "No name",
-            int iD=-1, int producerID=0, 
+            int producerID=0, 
             double price = 0,
             string photo = "No photo",
             string description = "No description",
             Category category = Category.None)
         {
 
-            if (iD == -1) 
-                iD = Ducks?.Max(x => x.ID) + 1 ?? 1;
+            
+            int iD = Ducks?.Max(x => x.ID) + 1 ?? 1;
            
             Duck newDuck = new() 
             { 
@@ -54,13 +54,13 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
             
             Ducks!.Add(newDuck);
 
-            return 0;
+            return iD;
         }
 
-        public int AddProducer(string name= "No name", string website="No website", int id=-1)
+        public int AddProducer(string name= "No name", string website="No website")
         {
-            if (id == -1)
-                id =  Producers?.Max(x => x.ID) + 1 ?? 1;
+            
+            int id =  Producers?.Max(x => x.ID) + 1 ?? 1;
 
             Producers?.Add(new Producer
             {
@@ -69,7 +69,7 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
                 Website = website,
             });
 
-            return 0;
+            return id;
         }
 
         public int DeleteDuck(int id)

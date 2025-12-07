@@ -13,15 +13,14 @@ namespace Strzelecki_Baranowski.DuckApp.INTERFACES
         IEnumerable<IDuck> GetDucks();
 
         int AddProducer(string name,
-            string website, 
-            int id);
+            string website);
 
         int DeleteProducer(int id);
 
         int UpdateProducer(int id, string? name, string? website);
 
         int AddDuck(string name,
-            int iD, int producerID,
+            int producerID,
             double price,
             string photo,
             string description,

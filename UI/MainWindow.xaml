@@ -28,19 +28,20 @@
 
 
             <UniformGrid Grid.Column="0" Grid.Row="0" Columns="2" Margin="5">
-                <Button Content="Ducks" Click="ShowDucks_Click" Padding="5,2"/>
-                <Button Content="Producers" Click="ShowProducers_Click" Padding="5,2"/>
+                <Button Content="Ducks" Command="{Binding ShowDucksCommand}" Padding="5,2"/>
+                <Button Content="Producers" Command="{Binding ShowProducersCommand}" Padding="5,2"/>
             </UniformGrid>
 
 
-            <ListView Name="Lista" Grid.Column="0" Grid.Row="1" Margin="5"
+            <ListView Name="Lista" ItemsSource ="{Binding List}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
+          SelectionMode="Single" Grid.Column="0" Grid.Row="1" Margin="5"
               DisplayMemberPath="Name"/>
 
             <UniformGrid Grid.Row="2" Grid.Column="0" Columns="3" Margin="5">
-                <Button Content="Dodaj" Click="AddItem_Click" Padding="5,2"/>
-                <Button Content="Usuń" Click="RemoveItem_Click" Padding="5,2"/>
-                <Button Content="Edytuj" Click="EditItem_Click" Padding="5,2"/>
-            </UniformGrid>
+                  <Button Content="Dodaj" Command="{Binding AddItemCommand}" Padding="5,2"/>
+                <Button Content="Usuń" Command="{Binding DeleteItemCommand}" Padding="5,2"/>
+                <Button Content="Edytuj" Command="{Binding EditItemCommand}" Padding="5,2"/>
+            </UniformGrid> 
 
 
         </Grid>
@@ -75,7 +76,7 @@
 
         </Grid>
            -->
-        <ContentControl Grid.Column="1" 
+        <ContentControl Grid.Column="1" Name="DetailsView" Visibility="{Binding DetailsVisibility}"
                 Content="{Binding ElementName=Lista, Path=SelectedItem}">
             <ContentControl.Resources>
 
@@ -100,11 +101,11 @@
                         <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
                         <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Description}"/>
                       
-                        <TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap">
-                            <Hyperlink Click="ShowSpecifiedProducer_Click">
+                       <TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap">
+                            <Hyperlink Command="{Binding DataContext.ShowSpecifiedProducerCommand, RelativeSource={RelativeSource AncestorType=Window}}">
                                 <Run Text="{Binding ProducerName}" />
                             </Hyperlink>
-                        </TextBlock>
+                        </TextBlock> 
 
                         <TextBlock Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Price}"/>
                         <Image Grid.Column="1" Grid.Row="4" Source="{Binding Photo}"/>
@@ -139,7 +140,77 @@
                 </DataTemplate>
 
             </ContentControl.Resources>
-        </ContentControl> 
+        </ContentControl>
+
+        <ContentControl Name="EditView" Visibility="{Binding EditVisibility}" Grid.Column="1" 
+        Content="{Binding DummyObject}">
+            <ContentControl.Resources>
+
+                <DataTemplate DataType="{x:Type local:DuckViewModel}">
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition  Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0" Content="Name" />
+                        <Label Grid.Column="0" Grid.Row="1" Content="Description"/>
+                        <Label Grid.Column="0" Grid.Row="2" Content="Producer Name"/>
+                        <Label Grid.Column="0" Grid.Row="3" Content="Price (€)"/>
+                        <Label Grid.Column="0" Grid.Row="4" Content="Photo"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
+                        <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Description}"/>
+
+                        <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="Pamiętać o combo boxie na producera!!!!!"/>
+
+                        <TextBox Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Price}"/>
+                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Photo}"/>
+                        <StackPanel Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
+                            <Button Width="Auto" Content="Anuluj" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            <Button Width="Auto" Content="Zapisz" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+
+
+                <DataTemplate DataType="{x:Type local:ProducerViewModel}" >
+                    <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0" Content="Name" />
+                        <Label Grid.Column="0" Grid.Row="1" Content="Website"/>
+                        <Label Grid.Column="0" Grid.Row="2" Content="ID"/>
+
+                        <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
+                        <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Website}" />
+                        <!--<TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />-->
+                        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
+                            <Button Width="Auto" Content="Anuluj" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            <Button Width="Auto" Content="Zapisz" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+
+            </ContentControl.Resources>
+        </ContentControl>
 
 
         <!--<Button Width="Auto" Content="dodaj kaczkę" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center"  Click="AddNewDuck"/>
