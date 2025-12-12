@@ -23,7 +23,7 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
             { 
                 new Duck() { Name= "Minecraf - Zombie (Mini)", ID=1, ProducerID=1, Price=9.99,
                     Description="He crawls straight out of the pixelated world of Minecraft and into your bath paradise: the Mini Bath Duck Minecraft Zombie! With his angular design, green complexion and typical blocky look, this undead creature is probably the most charming bath guest you've ever had. Instead of brains, he prefers to hunt for soap bubbles – but be careful, his duck friends might still get a fright!",
-                    Photo= /*"https://www.duckshop.de/media/image/ec/98/6b/Minecraft_-_Zombie_Mini_173430744_200x200.jpg"*/"photos/1.jpg",
+                    Photo= /*"https://www.duckshop.de/media/image/ec/98/6b/Minecraft_-_Zombie_Mini_173430744_200x200.jpg"*/ "photos/1.jpg" /*"photos/8847e930-c875-4b9d-9142-9ef317796d0e.jpg"*/,
                     Category=Category.VideoGames 
                 }
             };
@@ -133,5 +133,18 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
 
             return 0;
         }
+
+
+        public IDuck GetNewDuck()
+        {
+            return new Duck();
+        }
+
+        public IProducer GetNewProducer()
+        { 
+            return new Producer(); 
+        }
+
+
     }
 }

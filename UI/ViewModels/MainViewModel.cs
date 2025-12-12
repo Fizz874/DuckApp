@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,18 +10,25 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CORE;
 using Strzelecki_Baranowski.DuckApp.BL;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 using Strzelecki_Baranowski.DuckApp.UI;
 
 namespace Strzelecki_Baranowski.DuckApp.ViewModels
 {
-    public partial class MainViewModel : ObservableObject
+    public partial class MainViewModel : ObservableValidator
     {
 
         private readonly BLC _businessLogic;
 
-
+        public IEnumerable<Category> CategoryValues
+        {
+            get
+            {
+                return Enum.GetValues(typeof(Category)).Cast<Category>();
+            }
+        }
 
         public DuckListViewModel DuckVM { get; set; } //TODO private?
         public ProducerListViewModel ProducerVM { get; set; }
@@ -63,6 +71,31 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         [ObservableProperty]
         private object _dummyObject;
 
+        partial void OnDummyObjectChanged(object? oldValue, object? newValue)
+        {
+            // 1. WYREJESTROWANIE (ODPIĘCIE) STAREGO OBIEKTU
+            // Rzutujemy starego object na INotifyDataErrorInfo, aby odpiąć zdarzenie.
+            if (oldValue is INotifyDataErrorInfo oldDataErrorInfo)
+            {
+                oldDataErrorInfo.ErrorsChanged -= DummyObject_ErrorsChanged;
+            }
+
+            // 2. REJESTRACJA (PODPIĘCIE) NOWEGO OBIEKTU
+            // Rzutujemy nowego object na INotifyDataErrorInfo, aby podpiąć zdarzenie.
+            if (newValue is INotifyDataErrorInfo newDataErrorInfo)
+            {
+                newDataErrorInfo.ErrorsChanged += DummyObject_ErrorsChanged;
+            }
+
+            // 3. POWIADOMIENIE WIDOKU
+            // Zawsze powiadamiamy, że lista błędów mogła się zmienić
+            OnPropertyChanged(nameof(Bledy));
+        }
+        private void DummyObject_ErrorsChanged(object? sender, System.ComponentModel.DataErrorsChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(Bledy));
+        }
+
         [ObservableProperty]
         private string _listType = "ducks";
 
@@ -100,17 +133,19 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         private void AddItem()
         {
 
-            DummyObject = new DuckViewModel(null, null);
+            //DummyObject = new DuckViewModel(null, null);
 
             if (ListType == "ducks")
             {
                
-                DummyObject = new DuckViewModel(null, null);
-
+                var newduck  = new DuckViewModel(_businessLogic.GetNewDuck(), ProducerVM.Producers.FirstOrDefault(x=>x.ID==0)) ;
+                newduck.ID = -1;
+                newduck.Name = "";
+                DummyObject = newduck;
             }
             else
             {
-                DummyObject = new ProducerViewModel(null);
+                DummyObject = new ProducerViewModel(_businessLogic.GetNewProducer());
             }
 
             EditVisibility = Visibility.Visible;
@@ -118,27 +153,42 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(CanEdit))]
-        private void DeleteItem()
+        private void DeleteItem() 
         {
             try
             {
                 if (SelectedItem == null) return;
-                if (SelectedItem.GetType() == typeof(DuckViewModel))
+                //if (SelectedItem.GetType() == typeof(DuckViewModel))
+                if (SelectedItem is DuckViewModel duckVM)
                 {
-                    var duck = SelectedItem as DuckViewModel;
-                    if (duck == null) return;
+                    //var duck = SelectedItem as DuckViewModel;
+                    //if (duck == null) return;
 
-                    DuckVM.Ducks.Remove(SelectedItem as DuckViewModel);
-                    _businessLogic.DeleteDuck(duck.ID);
+                    DuckVM.Ducks.Remove(/*SelectedItem as DuckViewModel*/duckVM);
+                    _businessLogic.DeleteDuck(duckVM.ID);
 
                 }
-                else
+                else if (SelectedItem is ProducerViewModel prodVM)
                 {
-                    var prodVM = SelectedItem as ProducerViewModel;
-                    if (prodVM == null) return;
+                    //var prodVM = SelectedItem as ProducerViewModel; //TODO przy usuwaniu przeba zmienić odniesienia we wszystkich kaczkach
+                    //if (prodVM == null) return;
 
-                    ProducerVM.Producers.Remove(SelectedItem as ProducerViewModel);
-                    _businessLogic.DeleteDuck(prodVM.ID);
+                    int defaultProducerId = 0;
+
+                    var fallbackProducer = ProducerVM.Producers.FirstOrDefault(p => p.ID == defaultProducerId);
+
+                 
+                    var ducksToUpdate = DuckVM.Ducks.Where(d => d.ProducerID == prodVM.ID).ToList();
+
+                    foreach (var duck in ducksToUpdate)
+                    {
+                        duck.ProducerVM = fallbackProducer;
+                        duck.ProducerID = fallbackProducer?.ID ?? defaultProducerId;
+                        duck.ProducerName = fallbackProducer?.Name ?? "Inny producent";
+                    }
+
+                    ProducerVM.Producers.Remove(prodVM);
+                    _businessLogic.DeleteProducer(prodVM.ID);
                 }
 
 
@@ -154,21 +204,22 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         private void EditItem()
         {
             if (SelectedItem == null) return;
-            if (SelectedItem.GetType() == typeof(DuckViewModel))
+            //if (SelectedItem.GetType() == typeof(DuckViewModel))
+            if (SelectedItem is DuckViewModel duckVM)
             {
-                var duckVM = SelectedItem as DuckViewModel;
-                if (duckVM == null) return;
+                //var duckVM = SelectedItem as DuckViewModel;
+                //if (duckVM == null) return;
 
                 
-                DummyObject = duckVM.Clone();
+                DummyObject = duckVM.Clone(_businessLogic.GetNewDuck());
 
             }
-            else
+            else if (SelectedItem is ProducerViewModel prodVM)
             {
-                var prodVM = SelectedItem as ProducerViewModel;
-                if (prodVM == null) return;
+                //var prodVM = SelectedItem as ProducerViewModel;
+                //if (prodVM == null) return;
 
-                DummyObject = prodVM.Clone();  
+                DummyObject = prodVM.Clone(_businessLogic.GetNewProducer());  
             }
 
                 //Kopiowanie wartości do dummy
@@ -192,12 +243,16 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
           EditVisibility = Visibility.Collapsed;
         }
 
+
+
+
         [RelayCommand]
         private void Save() //TODO dlaczego utrata focucu nie działa
         {
             try
             {
-
+                if (Bledy.Count() > 0)
+                    return;
                 switch (DummyObject)
                 {
                     
@@ -213,20 +268,20 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
 
                     if (editedDuck.ID == -1)
                     {
-                        int iD = _businessLogic.AddNewDuck(editedDuck.Name, editedDuck.ProducerID, editedDuck.Price, editedDuck.Photo, editedDuck.Description, editedDuck.Category );
+                        int iD = _businessLogic.AddNewDuck(editedDuck.GetDuck()/*editedDuck.Name, editedDuck.ProducerID, editedDuck.Price, editedDuck.Photo, editedDuck.Description, editedDuck.Category */);
                         
                         editedDuck.ID = iD; //TODO trzebaby aktualizować IDuck _duck chyba że się go zupełnie pozbywamy
-
+                        editedDuck.ProducerID = editedDuck.ProducerVM!.ID;
+                        editedDuck.ProducerName = editedDuck.ProducerVM.Name;
                         DuckVM.Ducks.Add( editedDuck );
+                        SelectedItem = editedDuck;
 
 
-                    } else
+                        } else
                     {
 
+
                     
-
-                        _businessLogic.UpdateDuck(editedDuck.GetDuck()); 
-
 
 
                         var ducks = DuckVM.Ducks;
@@ -234,16 +289,20 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                         {
                             if (ducks[i].ID == editedDuck.ID)
                             {
+
+
                                     ducks[i].UpdateFrom(editedDuck);
-                                break;
+                                    SelectedItem = ducks[i];
+                                    break;
                             }
                         }
+                            _businessLogic.UpdateDuck(editedDuck.GetDuck()); //TODO nie przenosić przed UPDATEFrom bo wtdy viewmodel nie łapie zmian XD
 
 
 
                         }
 
-                        SelectedItem = editedDuck;
+
                         ShowDucks();
 
 
@@ -257,7 +316,6 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                     var editedProd = DummyObject as ProducerViewModel;
                     if (editedProd == null) return;
 
-
                     if (editedProd.ID == -1)
                     {
                         int iD = _businessLogic.AddNewProducer(editedProd.Name, editedProd.Website);
@@ -265,14 +323,14 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                         editedProd.ID = iD; //TODO trzeba by aktualizować  _producer chyba że się go zupełnie pozbywamy (wtedy trzeba przerobić update w BLC)
 
                             ProducerVM.Producers.Add(editedProd);
+                            SelectedItem = editedProd;
 
-                    }
-                    else
+                        }
+                        else
                     {
 
                         
 
-                        _businessLogic.UpdateProducer(editedProd.GetProd());
 
 
                         var prods = ProducerVM.Producers;
@@ -281,13 +339,17 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                             if (prods[i].ID == editedProd.ID)
                             {
                                 prods[i].UpdateFrom(editedProd);
+                                SelectedItem = prods[i];
                                 break;
                             }
                         }
-                    }
+
+                        _businessLogic.UpdateProducer(editedProd.GetProd());
+
+                        }
 
 
-                        SelectedItem = editedProd;
+
                         ShowProducers();
 
                         break;
@@ -307,5 +369,63 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                 throw ex;
             }
         }
-}
+
+        public IEnumerable<string> Bledy
+        {
+            get
+            {
+                switch (DummyObject)
+                {
+                    case DuckViewModel duckVM:
+                        {
+                            //var errors = new List<string>();
+                            //var properties = duckVM.GetType().GetProperties();
+
+                            //foreach (var property in properties)
+                            //{
+
+                            //    IEnumerable currentErrors = duckVM.GetErrors(property.Name);
+
+                            //    if (currentErrors != null)
+                            //    {
+                            //        foreach (var error in currentErrors)
+                            //        {
+                            //            if (error != null) errors.Add(error.ToString());
+                            //        }
+                            //    }
+                            //}
+                            return duckVM.GetErrors().Select(x => x.ErrorMessage ?? "");//errors.Distinct();
+                        }
+
+                    case ProducerViewModel producerVM:
+                        {
+                            //var errors = new List<string>();
+                            //var properties = producerVM.GetType().GetProperties();
+
+                            //foreach (var property in properties)
+                            //{
+                            //    IEnumerable currentErrors = producerVM.GetErrors(property.Name);
+
+                            //    if (currentErrors != null)
+                            //    {
+                            //        foreach (var error in currentErrors)
+                            //        {
+                            //            if (error != null) errors.Add(error.ToString());
+                            //        }
+                            //    }
+                            //}
+                            return producerVM.GetErrors().Select(x => x.ErrorMessage ?? "");//return errors.Distinct();
+                        }
+
+                    default:
+                        return Enumerable.Empty<string>();
+                }
+            }
+        
+    }
+
+
+
+
+    }
 }

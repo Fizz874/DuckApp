@@ -11,7 +11,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
     public class ProducerListViewModel
     {
 
-        public ObservableCollection<ProducerViewModel> Producers { get; set; } = new();
+        public ObservableCollection<ProducerViewModel> Producers { get; set; } = [];
         public ProducerListViewModel(IEnumerable<IProducer> list)
         {
             foreach (var item in list)
@@ -19,6 +19,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
                 Producers.Add(new ProducerViewModel(item));
             }
         }
+
 
     }
 }

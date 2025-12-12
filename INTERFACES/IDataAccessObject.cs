@@ -36,5 +36,8 @@ namespace Strzelecki_Baranowski.DuckApp.INTERFACES
             Category? category
             );
 
+        IDuck GetNewDuck();
+        IProducer GetNewProducer();
+
     }
 }

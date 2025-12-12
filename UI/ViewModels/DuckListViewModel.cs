@@ -26,6 +26,11 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             }
         }
 
+
+
+
+
+
     }
 
     }

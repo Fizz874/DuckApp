@@ -73,15 +73,15 @@ namespace Strzelecki_Baranowski.DuckApp.BL
 
         }
 
-        public int AddNewDuck(string name,
+        public int AddNewDuck(/*string name,
             int producerID,
             double price,
             string photo,
             string description,
-            Category category)
+            Category category*/IDuck duck)
         {
 
-            return _dao.AddDuck(name, producerID, price, photo, description, category);
+            return _dao.AddDuck(duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
 
         }
 
@@ -101,6 +101,16 @@ namespace Strzelecki_Baranowski.DuckApp.BL
         public void DeleteProducer(int id)
         {
             _dao.DeleteProducer(id);
+        }
+
+        public IDuck GetNewDuck() 
+        {  
+            return _dao.GetNewDuck(); 
+        }
+
+        public IProducer GetNewProducer()
+        {
+            return _dao.GetNewProducer();
         }
 
 

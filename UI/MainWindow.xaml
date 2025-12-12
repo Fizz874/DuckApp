@@ -76,7 +76,9 @@
 
         </Grid>
            -->
-        <ContentControl Grid.Column="1" Name="DetailsView" Visibility="{Binding DetailsVisibility}"
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Column="1">
+            <Grid>
+        <ContentControl  Name="DetailsView" Visibility="{Binding DetailsVisibility}"
                 Content="{Binding ElementName=Lista, Path=SelectedItem}">
             <ContentControl.Resources>
 
@@ -90,25 +92,27 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition  Height="Auto"/>
+                            <RowDefinition  Height="Auto"/>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-
-                        <Label Grid.Column="0" Grid.Row="0" Content="Name" />
-                        <Label Grid.Column="0" Grid.Row="1" Content="Description"/>
-                        <Label Grid.Column="0" Grid.Row="2" Content="Producer Name"/>
-                        <Label Grid.Column="0" Grid.Row="3" Content="Price (€)"/>
-                        <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
-                        <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Description}"/>
+                        <Label Grid.Column="0" Grid.Row="0" Content="Name"/>
+                        <Label Grid.Column="0" Grid.Row="2" Content="Description"/>
+                        <Label Grid.Column="0" Grid.Row="1" Content="Category"/>
+                        <Label Grid.Column="0" Grid.Row="3" Content="Producer Name"/>
+                        <Label Grid.Column="0" Grid.Row="4" Content="Price (€)"/>
+                        <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Category}" />
+                        <TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding Description}"/>
                       
-                       <TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap">
+                       <TextBlock Grid.Column="1" Grid.Row="3" TextWrapping="Wrap">
                             <Hyperlink Command="{Binding DataContext.ShowSpecifiedProducerCommand, RelativeSource={RelativeSource AncestorType=Window}}">
                                 <Run Text="{Binding ProducerName}" />
                             </Hyperlink>
                         </TextBlock> 
 
-                        <TextBlock Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Price}"/>
-                        <Image Grid.Column="1" Grid.Row="4" Source="{Binding Photo}"/>
+                        <TextBlock Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Price}"/>
+                                <Image Grid.Column="1"  Grid.Row="5" Source="{Binding FullPhotoPath, TargetNullValue='photos/20.jpg', FallbackValue='photos/20.jpg'}" />
 
 
                     </Grid>
@@ -125,24 +129,28 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
                         <Label Grid.Column="0" Grid.Row="0" Content="Name" />
                         <Label Grid.Column="0" Grid.Row="1" Content="Website"/>
-                        <Label Grid.Column="0" Grid.Row="2" Content="ID"/>
+                        <!--<Label Grid.Column="0" Grid.Row="2" Content="ID"/>-->
 
                         <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
-                        <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Website}" />
-                        <TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />
+                        <TextBlock Grid.Column="1" Grid.Row="1">
+                            <Hyperlink Command="{Binding OpenLinkCommand}" 
+                                        CommandParameter="{Binding Website}">
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Website}" />
+                            </Hyperlink>
+                        </TextBlock>
+                        <!--<TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />-->
                     </Grid>
                 </DataTemplate>
 
             </ContentControl.Resources>
         </ContentControl>
 
-        <ContentControl Name="EditView" Visibility="{Binding EditVisibility}" Grid.Column="1" 
+        <ContentControl Name="EditView" Visibility="{Binding EditVisibility}"
         Content="{Binding DummyObject}">
             <ContentControl.Resources>
 
@@ -155,25 +163,49 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition  Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
                         <Label Grid.Column="0" Grid.Row="0" Content="Name" />
-                        <Label Grid.Column="0" Grid.Row="1" Content="Description"/>
-                        <Label Grid.Column="0" Grid.Row="2" Content="Producer Name"/>
-                        <Label Grid.Column="0" Grid.Row="3" Content="Price (€)"/>
-                        <Label Grid.Column="0" Grid.Row="4" Content="Photo"/>
-                        <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
-                        <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Description}"/>
+                        <Label Grid.Column="0" Grid.Row="1" Content="Category"/>
+                        <Label Grid.Column="0" Grid.Row="2" Content="Description"/>
+                        <Label Grid.Column="0" Grid.Row="3" Content="Producer Name"/>
+                        <Label Grid.Column="0" Grid.Row="4" Content="Price (€)"/>
+                        <Label Grid.Column="0" Grid.Row="5" Content="Photo"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"  />
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding Category}" Grid.Row="1" ItemsSource="{Binding DataContext.CategoryValues , RelativeSource={RelativeSource AncestorType=Window}}"/>
 
-                        <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="Pamiętać o combo boxie na producera!!!!!"/>
+                                <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <TextBox Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Price}"/>
-                        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Photo}"/>
-                        <StackPanel Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
+                        <!--<TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="Pamiętać o combo boxie na producera!!!!!"/> -->
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding ProducerVM}" Grid.Row="3"  DisplayMemberPath="Name" ItemsSource="{Binding DataContext.ProducerVM.Producers , RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                <TextBox Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"/>
+                                <!--<TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Photo, UpdateSourceTrigger=PropertyChanged}"/>-->
+                                <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Vertical">
+
+                                    <Image Source="{Binding FullPhotoPath, TargetNullValue='photos/20.jpg', FallbackValue='photos/20.jpg'}" 
+                                       Height="150" 
+                                       Stretch="Uniform" 
+                                       Margin="0,0,0,10"/>
+
+                                    <Button Content="Choose photo" 
+                                        Command="{Binding SelectPhotoCommand}" 
+                                        Width="120" 
+                                        Height="30"/>
+
+                                    <TextBlock Text="{Binding Photo}" 
+                                        FontSize="10" 
+                                        Foreground="Gray" 
+                                        TextWrapping="Wrap"/>
+
+                                </StackPanel>
+                                <ListBox Grid.Column="0" Grid.Row="6"  Grid.ColumnSpan="2" ItemsSource="{Binding DataContext.Bledy, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <StackPanel VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
                             <Button Width="Auto" Content="Anuluj" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
                             <Button Width="Auto" Content="Zapisz" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                         </StackPanel>
@@ -198,10 +230,14 @@
                         <Label Grid.Column="0" Grid.Row="0" Content="Name" />
                         <Label Grid.Column="0" Grid.Row="1" Content="Website"/>
 
-                        <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
-                        <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Website}" />
+                        <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Website, UpdateSourceTrigger=PropertyChanged}" />
                         <!--<TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />-->
-                        <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
+                
+
+
+                                <ListBox Grid.Column="0" Grid.Row="2"  Grid.ColumnSpan="2" ItemsSource="{Binding DataContext.Bledy, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
                             <Button Width="Auto" Content="Anuluj" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
                             <Button Width="Auto" Content="Zapisz" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                         </StackPanel>
@@ -210,7 +246,8 @@
 
             </ContentControl.Resources>
         </ContentControl>
-
+            </Grid>
+        </ScrollViewer>
 
         <!--<Button Width="Auto" Content="dodaj kaczkę" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center"  Click="AddNewDuck"/>
         <Button Width="Auto" Content="edytuj kaczkę" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center"  Click="ModifyDuck"/> -->
