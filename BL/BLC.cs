@@ -17,13 +17,13 @@ namespace Strzelecki_Baranowski.DuckApp.BL
             //var o = Activator.CreateInstance(ti, new object[] { "" });
 
             if (string.IsNullOrWhiteSpace(config_path))
-                throw new ArgumentNullException(nameof(config_path), "Ścieżka do assembly nie może być pusta.");
+                throw new ArgumentNullException(nameof(config_path), "Assembly path cannot be empty.");
 
             if (string.IsNullOrWhiteSpace(type))
-                throw new ArgumentNullException(nameof(type), "Nazwa typu nie może być pusta.");
+                throw new ArgumentNullException(nameof(type), "Type name cannot be empty.");
 
             if (!System.IO.File.Exists(config_path))
-                throw new FileNotFoundException($"Nie znaleziono pliku assembly: {config_path}");
+                throw new FileNotFoundException($"Type name cannot be empty. { config_path}");
 
             // Ładowanie assembly
             Assembly asm;
@@ -33,13 +33,14 @@ namespace Strzelecki_Baranowski.DuckApp.BL
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException($"Nie udało się załadować assembly z {config_path}", ex);
+                throw new InvalidOperationException($"Failed to load assembly from {config_path}", ex);
             }
+
 
             // Pobranie typu
             var ti = asm.GetType(type);
             if (ti == null)
-                throw new TypeLoadException($"Nie znaleziono typu '{type}' w assembly '{config_path}'.");
+                throw new TypeLoadException($"Type '{type}' not found in assembly '{config_path}'.");
 
             var instance = Activator.CreateInstance(ti);
 
@@ -63,14 +64,15 @@ namespace Strzelecki_Baranowski.DuckApp.BL
 
         public void UpdateDuck(IDuck duck) //TODO upewnić się że foto wskazuje w dobre miejsce
         {
-            _dao.UpdateDuck(duck.ID, duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
+            //_dao.UpdateDuck(duck.ID, duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
+            _dao.UpdateDuck(duck);
 
         }
 
         public void UpdateProducer(IProducer producer)
         {
-            _dao.UpdateProducer(producer.ID, producer.Name, producer.Website);
-
+            //_dao.UpdateProducer(producer.ID, producer.Name, producer.Website);
+            _dao.UpdateProducer(producer);
         }
 
         public int AddNewDuck(/*string name,
@@ -81,13 +83,13 @@ namespace Strzelecki_Baranowski.DuckApp.BL
             Category category*/IDuck duck)
         {
 
-            return _dao.AddDuck(duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
-
+            //return _dao.AddDuck(duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
+            return _dao.AddDuck(duck);
         }
 
-        public int AddNewProducer(string name, string website)
+        public int AddNewProducer(/*string name, string website*/IProducer producer)
         {
-            return _dao.AddProducer(name, website);
+            return _dao.AddProducer(producer/*name, website*/);
 
         }
 

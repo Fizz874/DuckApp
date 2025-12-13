@@ -128,6 +128,11 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         }
 
 
+        public void Validate()
+        {
+            this.ValidateAllProperties();
+        }
+
         //[ObservableProperty]
         //private string _name;
 

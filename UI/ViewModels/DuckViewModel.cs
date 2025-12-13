@@ -27,9 +27,25 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 
         private IDuck _duck;
 
+        [Required(ErrorMessage = "You have to choose a producer!")]
         [ObservableProperty]
         private ProducerViewModel? _producerVM;
         //public event PropertyChangedEventHandler? PropertyChanged;
+        partial void OnProducerVMChanged(ProducerViewModel? value)
+        {
+            if (value != null)
+            {
+                ProducerID = value.ID;
+                ProducerName = value.Name; 
+            }
+            else
+            {
+                ProducerID = 0;
+            }
+        }
+
+
+
         [ObservableProperty]
         private string _producerName;
 
@@ -223,8 +239,6 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         }
 
 
-
-
         public int ProducerID
         {
             get => _duck.ProducerID;
@@ -368,7 +382,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         }
 
         [RelayCommand]
-        private void SelectPhoto()
+        private void SelectPhoto()  //TODO - trzeba jakoś ustalić placeholer photo
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Wybierz zdjęcie kaczki";
@@ -403,107 +417,113 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         }
 
 
-                // Zakładając, że poniższy kod znajduje się wewnątrz klasy ViewModel,
-                // która posiada pole _duck (model danych) i zdarzenie PropertyChanged.
-
-                //public string Name
-                //{
-                //    get { return _duck.Name; }
-                //    set
-                //    {
-                //        if (_duck.Name != value && _duck.Name != null)
-                //        {
-                //            _duck.Name = value;
-                //            if (PropertyChanged != null)
-                //            {
-                //                PropertyChanged(this, new PropertyChangedEventArgs("Name"));
-                //                //PropertyChanged(this, new PropertyChangedEventArgs("DisplayText"));
-                //            }
-                //        }
-                //    }
-                //}
-
-                // === DODANY SETTER dla Description ===
-                //public string Description
-                //{
-                //    get => _duck.Description;
-                //    set
-                //    {
-                //        if (_duck.Description != value)
-                //        {
-                //            _duck.Description = value;
-                //            if (PropertyChanged != null)
-                //            {
-                //                PropertyChanged(this, new PropertyChangedEventArgs("Description"));
-                //            }
-                //        }
-                //    }
-                //}
-
-                //public int ID => _duck.ID; // Pozostawiamy tylko do odczytu
-                //public int ProducerID => _duck.ProducerID; // Pozostawiamy tylko do odczytu
-
-                //public string ProducerName
-                //{
-                //    get => _producerVM?.Name ?? "Unknown";
-                //    set
-                //    {
-                //        if (_producerVM != null && _producerVM.Name != value)
-                //        {
-                //            _producerVM.Name = value;
-                //            if (PropertyChanged != null)
-                //            {
-                //                PropertyChanged(this, new PropertyChangedEventArgs("ProducerName"));
-                //                //PropertyChanged(this, new PropertyChangedEventArgs("DisplayText"));
-                //            }
-                //        }
-                //    }
-                //}
+        public void Validate()
+        {
+            this.ValidateAllProperties();
+        }
 
 
-                // === DODANY SETTER dla Price ===
-                //public double Price
-                //{
-                //    get => _duck.Price;
-                //    set
-                //    {
-                //        if (_duck.Price != value)
-                //        {
-                //            _duck.Price = value;
-                //            if (PropertyChanged != null)
-                //            {
-                //                PropertyChanged(this, new PropertyChangedEventArgs("Price"));
-                //            }
-                //        }
-                //    }
-                //}
+        // Zakładając, że poniższy kod znajduje się wewnątrz klasy ViewModel,
+        // która posiada pole _duck (model danych) i zdarzenie PropertyChanged.
 
-                // === DODANY SETTER dla Photo ===
-                //public string Photo
-                //{
-                //    get => _duck.Photo;
-                //    set
-                //    {
-                //        if (_duck.Photo != value)
-                //        {
-                //            _duck.Photo = value;
-                //            if (PropertyChanged != null)
-                //            {
-                //                PropertyChanged(this, new PropertyChangedEventArgs("Photo"));
-                //            }
-                //        }
-                //    }
-                //}
+        //public string Name
+        //{
+        //    get { return _duck.Name; }
+        //    set
+        //    {
+        //        if (_duck.Name != value && _duck.Name != null)
+        //        {
+        //            _duck.Name = value;
+        //            if (PropertyChanged != null)
+        //            {
+        //                PropertyChanged(this, new PropertyChangedEventArgs("Name"));
+        //                //PropertyChanged(this, new PropertyChangedEventArgs("DisplayText"));
+        //            }
+        //        }
+        //    }
+        //}
+
+        // === DODANY SETTER dla Description ===
+        //public string Description
+        //{
+        //    get => _duck.Description;
+        //    set
+        //    {
+        //        if (_duck.Description != value)
+        //        {
+        //            _duck.Description = value;
+        //            if (PropertyChanged != null)
+        //            {
+        //                PropertyChanged(this, new PropertyChangedEventArgs("Description"));
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public int ID => _duck.ID; // Pozostawiamy tylko do odczytu
+        //public int ProducerID => _duck.ProducerID; // Pozostawiamy tylko do odczytu
+
+        //public string ProducerName
+        //{
+        //    get => _producerVM?.Name ?? "Unknown";
+        //    set
+        //    {
+        //        if (_producerVM != null && _producerVM.Name != value)
+        //        {
+        //            _producerVM.Name = value;
+        //            if (PropertyChanged != null)
+        //            {
+        //                PropertyChanged(this, new PropertyChangedEventArgs("ProducerName"));
+        //                //PropertyChanged(this, new PropertyChangedEventArgs("DisplayText"));
+        //            }
+        //        }
+        //    }
+        //}
 
 
-                //TODO dokończyć
+        // === DODANY SETTER dla Price ===
+        //public double Price
+        //{
+        //    get => _duck.Price;
+        //    set
+        //    {
+        //        if (_duck.Price != value)
+        //        {
+        //            _duck.Price = value;
+        //            if (PropertyChanged != null)
+        //            {
+        //                PropertyChanged(this, new PropertyChangedEventArgs("Price"));
+        //            }
+        //        }
+        //    }
+        //}
+
+        // === DODANY SETTER dla Photo ===
+        //public string Photo
+        //{
+        //    get => _duck.Photo;
+        //    set
+        //    {
+        //        if (_duck.Photo != value)
+        //        {
+        //            _duck.Photo = value;
+        //            if (PropertyChanged != null)
+        //            {
+        //                PropertyChanged(this, new PropertyChangedEventArgs("Photo"));
+        //            }
+        //        }
+        //    }
+        //}
 
 
-                //protected void OnPropertyChanged(string propertyName) =>
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //TODO dokończyć
+
+
+        //protected void OnPropertyChanged(string propertyName) =>
+        //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 
 
 
-            }
+    }
 }

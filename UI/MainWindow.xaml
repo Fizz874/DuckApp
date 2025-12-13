@@ -38,9 +38,9 @@
               DisplayMemberPath="Name"/>
 
             <UniformGrid Grid.Row="2" Grid.Column="0" Columns="3" Margin="5">
-                  <Button Content="Dodaj" Command="{Binding AddItemCommand}" Padding="5,2"/>
-                <Button Content="Usuń" Command="{Binding DeleteItemCommand}" Padding="5,2"/>
-                <Button Content="Edytuj" Command="{Binding EditItemCommand}" Padding="5,2"/>
+                  <Button Content="Add" Command="{Binding AddItemCommand}" Padding="5,2"/>
+                <Button Content="Delete" Command="{Binding DeleteItemCommand}" Padding="5,2"/>
+                <Button Content="Edit" Command="{Binding EditItemCommand}" Padding="5,2"/>
             </UniformGrid> 
 
 
@@ -206,8 +206,8 @@
                                 </StackPanel>
                                 <ListBox Grid.Column="0" Grid.Row="6"  Grid.ColumnSpan="2" ItemsSource="{Binding DataContext.Bledy, RelativeSource={RelativeSource AncestorType=Window}}"/>
                         <StackPanel VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
-                            <Button Width="Auto" Content="Anuluj" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
-                            <Button Width="Auto" Content="Zapisz" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                            <Button Width="Auto" Content="Cancel" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            <Button Width="Auto" Content="Save" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
@@ -238,8 +238,8 @@
 
                                 <ListBox Grid.Column="0" Grid.Row="2"  Grid.ColumnSpan="2" ItemsSource="{Binding DataContext.Bledy, RelativeSource={RelativeSource AncestorType=Window}}"/>
                         <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
-                            <Button Width="Auto" Content="Anuluj" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
-                            <Button Width="Auto" Content="Zapisz" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                            <Button Width="Auto" Content="Cancel" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+                            <Button Width="Auto" Content="Save" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
