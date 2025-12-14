@@ -1,4 +1,4 @@
-﻿using CORE;
+﻿using Strzelecki_Baranowski.DuckApp.CORE;
 using Strzelecki_Baranowski.DuckApp.UI;
 using System;
 using System.Collections.Generic;
@@ -14,18 +14,18 @@ namespace Strzelecki_Baranowski.DuckApp.UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is FilterModeEnum mode)
+            if (value is FilterMode mode)
             {
                 return mode switch
                 {
-                    FilterModeEnum.Equal => "=",
-                    FilterModeEnum.NotEqual => "≠",
-                    FilterModeEnum.Greater => ">",
-                    FilterModeEnum.Less => "<",
-                    FilterModeEnum.GreaterOrEqual => "≥",
-                    FilterModeEnum.LessOrEqual => "≤",
-                    FilterModeEnum.Contains => "⊆", // Ikona "zawiera tekst"
-                    FilterModeEnum.NotContains => "⊈",
+                    FilterMode.Equal => "=",
+                    FilterMode.NotEqual => "≠",
+                    FilterMode.Greater => ">",
+                    FilterMode.Less => "<",
+                    FilterMode.GreaterOrEqual => "≥",
+                    FilterMode.LessOrEqual => "≤",
+                    FilterMode.Contains => "⊆", // Ikona "zawiera tekst"
+                    FilterMode.NotContains => "⊈",
                     _ => "?"
                 };
             }

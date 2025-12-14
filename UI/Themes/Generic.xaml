@@ -44,9 +44,10 @@
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Converter={StaticResource ModeToIconConverter}}" 
                                                        Foreground="{Binding Converter={StaticResource ModeToColorConverter}}"
-                                               FontSize="12" 
+                                               FontSize="22" 
                                                FontWeight="ExtraBold"
-                                               TextAlignment="Center"/>
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center"/>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
@@ -74,4 +75,95 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!--<Style TargetType="{x:Type local:FilterControl}">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:FilterControl}">
+                    <ControlTemplate.Resources>
+                        <local:FilterModeToIconConverter x:Key="ModeToIconConverter"/>
+                        <local:FilterModeToColorConverter x:Key="ModeToColorConverter"/>
+                    </ControlTemplate.Resources>
+
+                    <Border x:Name="MainBorder"
+                        Background="White" 
+                        BorderBrush="#d1d5db" 
+                        BorderThickness="1" 
+                        CornerRadius="6">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" 
+                                Background="#f9fafb" 
+                                CornerRadius="6 0 0 6">
+
+                                <ComboBox ItemsSource="{Binding AvailableModes, RelativeSource={RelativeSource TemplatedParent}}"
+                                      SelectedItem="{Binding FilterMode, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      BorderThickness="0"
+                                      Background="Transparent"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalContentAlignment="Center"
+                                      Padding="0">
+
+                                    <ComboBox.Resources>
+                                        <Style TargetType="ToggleButton">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ToggleButton">
+                                                        <Border Background="Transparent"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ComboBox.Resources>
+
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource ModeToIconConverter}}" 
+                                                   Foreground="{Binding Converter={StaticResource ModeToColorConverter}}"
+                                                   FontSize="22" 
+                                                   FontWeight="Black"
+                                                   TextAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Border>
+
+                            <Border Grid.Column="1" Width="1" Background="#e5e7eb"/>
+
+                            <TextBox Grid.Column="2"
+                                 Text="{Binding FilterValue, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}" 
+                                 VerticalContentAlignment="Center"
+                                 VerticalAlignment="Stretch"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 Padding="8,0"
+                                 FontSize="14"/>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="#3b82f6"/>
+                            <Setter TargetName="MainBorder" Property="BorderThickness" Value="1"/>
+                            <Setter TargetName="MainBorder" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="#3b82f6" BlurRadius="4" ShadowDepth="0" Opacity="0.3"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+
+
 </ResourceDictionary>

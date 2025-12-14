@@ -1,4 +1,4 @@
-﻿namespace CORE
+﻿namespace Strzelecki_Baranowski.DuckApp.CORE
 {
     public enum Category
     {

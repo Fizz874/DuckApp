@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CORE;
+using Strzelecki_Baranowski.DuckApp.CORE;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +10,13 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 {
     public partial class FilterViewModel : ObservableObject
     {
-        [ObservableProperty] string _propertyName;
+        [ObservableProperty] string? _propertyName;
 
-        [ObservableProperty] FilterModeEnum _operator;
+        [ObservableProperty] FilterMode _operator;
 
-        [ObservableProperty] FilterTypeEnum _type;
+        [ObservableProperty] FilterType _type;
 
-        [ObservableProperty] string _value;
+        [ObservableProperty] string? _value;
 
         public bool IsMatch(object item)
         {
@@ -27,17 +27,17 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 
             if (itemValue == null) return false;
 
-            if (Type==FilterTypeEnum.Text)
+            if (Type==FilterType.Text)
             {
                 switch (Operator)
                 {
-                    case FilterModeEnum.Contains:
+                    case FilterMode.Contains:
                         return itemValue.ToLower().Contains(Value.ToLower());
-                    case FilterModeEnum.NotContains:
+                    case FilterMode.NotContains:
                         return !itemValue.ToLower().Contains(Value.ToLower());
-                    case FilterModeEnum.Equal:
+                    case FilterMode.Equal:
                         return itemValue.Equals(Value, StringComparison.OrdinalIgnoreCase);
-                    case FilterModeEnum.NotEqual:
+                    case FilterMode.NotEqual:
                         return !itemValue.Equals(Value, StringComparison.OrdinalIgnoreCase);
                     default:
                         return true;
@@ -49,26 +49,36 @@ namespace Strzelecki_Baranowski.DuckApp.UI
                     return false;
 
                 if (!double.TryParse(Value, out var filterNumber))
-                    return false;
+
+                    switch(Operator)
+                {
+                    case FilterMode.Equal:
+                        return false;
+                    case FilterMode.NotEqual:
+                        return true;
+                    default:
+                        return false;
+                    }
+
 
                 switch (Operator)
                 {
-                    case FilterModeEnum.Equal:
+                    case FilterMode.Equal:
                         return itemNumber == filterNumber;
 
-                    case FilterModeEnum.NotEqual:
+                    case FilterMode.NotEqual:
                         return itemNumber != filterNumber;
 
-                    case FilterModeEnum.Greater:
+                    case FilterMode.Greater:
                         return itemNumber > filterNumber;
 
-                    case FilterModeEnum.Less:
+                    case FilterMode.Less:
                         return itemNumber < filterNumber;
 
-                    case FilterModeEnum.GreaterOrEqual:
+                    case FilterMode.GreaterOrEqual:
                         return itemNumber >= filterNumber;
 
-                    case FilterModeEnum.LessOrEqual:
+                    case FilterMode.LessOrEqual:
                         return itemNumber <= filterNumber;
 
                     default:

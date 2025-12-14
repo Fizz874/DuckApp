@@ -13,7 +13,7 @@ using System.Windows.Controls;
 using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CORE;
+using Strzelecki_Baranowski.DuckApp.CORE;
 using Microsoft.Win32;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
@@ -206,18 +206,16 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         }
 
 
-        public string FullPhotoPath
+        public string? FullPhotoPath
         {
             get
             {
                 if (string.IsNullOrEmpty(Photo))
                     return null;
 
-                // Jeśli ścieżka jest już absolutna (np. http lub C:\), zwróć ją bez zmian
                 if (Path.IsPathRooted(Photo))
                     return Photo;
 
-                // Jeśli względna -> doklej folder uruchomieniowy aplikacji
                 return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Photo);
             }
         }
@@ -385,8 +383,8 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         private void SelectPhoto()  //TODO - trzeba jakoś ustalić placeholer photo
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Wybierz zdjęcie kaczki";
-            openFileDialog.Filter = "Pliki obrazów|*.jpg;*.jpeg;*.png;*.bmp|Wszystkie pliki|*.*";
+            openFileDialog.Title = "Choose duck photo";
+            openFileDialog.Filter = "Image files|*.jpg;*.jpeg;*.png;*.bmp";
 
             if (openFileDialog.ShowDialog() == true)
             {

@@ -15,38 +15,44 @@ namespace Strzelecki_Baranowski.DuckApp.UI
     public partial class App : Application
     {
 
-        private IServiceProvider serviceProvider;
+        private IServiceProvider? serviceProvider;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var config = new ConfigurationBuilder()
-               .SetBasePath(AppContext.BaseDirectory)
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-               .Build();
-
-
-            var serviceColl = new ServiceCollection();
-
-            //serviceColl.AddSingleton<IConfiguration>(config);
-
-            serviceColl.AddSingleton<BLC>(provider =>
+            try
             {
-                var section = config.GetSection("Dao");
+                var config = new ConfigurationBuilder()
+                   .SetBasePath(AppContext.BaseDirectory)
+                   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                   .Build();
 
-                return new BLC(section["Path"], section["Type"]);
-            });
 
-            serviceColl.AddSingleton<MainViewModel>();
-            serviceColl.AddSingleton<MainWindow>();
+                var serviceColl = new ServiceCollection();
 
-            serviceProvider = serviceColl.BuildServiceProvider();
+                //serviceColl.AddSingleton<IConfiguration>(config);
 
-            var mainWindow = serviceProvider.GetService<MainWindow>();
-            mainWindow.Show();
+                serviceColl.AddSingleton<BLC>(provider =>
+                {
+                    var section = config.GetSection("Dao");
 
-            base.OnStartup(e);
+                    return new BLC(section["Path"], section["Type"]);
+                });
 
-           
+                serviceColl.AddSingleton<MainViewModel>();
+                serviceColl.AddSingleton<MainWindow>();
+
+                serviceProvider = serviceColl.BuildServiceProvider();
+
+                var mainWindow = serviceProvider.GetService<MainWindow>();
+                mainWindow?.Show();
+
+                base.OnStartup(e);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
 
             //var section = config.GetSection("Dao");
             //var businessLogic = new BLC(section["Path"], section["Type"]);

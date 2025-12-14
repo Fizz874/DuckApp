@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CORE;
+using Strzelecki_Baranowski.DuckApp.CORE;
 
 namespace Strzelecki_Baranowski.DuckApp.INTERFACES
 {

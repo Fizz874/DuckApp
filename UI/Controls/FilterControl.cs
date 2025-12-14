@@ -1,4 +1,4 @@
-﻿using CORE;
+﻿using Strzelecki_Baranowski.DuckApp.CORE;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,17 +42,17 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         //    Number
         //}
 
-        public FilterModeEnum FilterMode
+        public FilterMode FilterMode
         {
-            get => (FilterModeEnum)GetValue(FilterModeProperty);
+            get => (FilterMode)GetValue(FilterModeProperty);
             set => SetValue(FilterModeProperty, value);
         }
 
         public static readonly DependencyProperty FilterModeProperty = DependencyProperty.Register(
             nameof(FilterMode),
-            typeof(FilterModeEnum),
+            typeof(FilterMode),
             typeof(FilterControl),
-            new PropertyMetadata(FilterModeEnum.Equal));
+            new PropertyMetadata(FilterMode.Equal));
 
         public string FilterValue
         {
@@ -66,29 +66,29 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             typeof(FilterControl),
             new PropertyMetadata(null));
 
-        public FilterTypeEnum FilterType
+        public FilterType FilterType
         {
-            get => (FilterTypeEnum)GetValue(FilterTypeProperty);
+            get => (FilterType)GetValue(FilterTypeProperty);
             set => SetValue(FilterTypeProperty, value);
         }
 
         public static readonly DependencyProperty FilterTypeProperty = DependencyProperty.Register(
             nameof(FilterType),
-            typeof(FilterTypeEnum),
+            typeof(FilterType),
             typeof(FilterControl),
-            new PropertyMetadata(FilterTypeEnum.Text, OnFilterTypeChanged));
+            new PropertyMetadata(FilterType.Text, OnFilterTypeChanged));
 
-        public ObservableCollection<FilterModeEnum> AvailableModes
+        public ObservableCollection<FilterMode> AvailableModes
         {
-            get => (ObservableCollection<FilterModeEnum>)GetValue(AvailableModesProperty);
+            get => (ObservableCollection<FilterMode>)GetValue(AvailableModesProperty);
             private set => SetValue(AvailableModesKey, value);
         }
 
         private static readonly DependencyPropertyKey AvailableModesKey = DependencyProperty.RegisterReadOnly(
             nameof(AvailableModes),
-            typeof(ObservableCollection<FilterModeEnum>),
+            typeof(ObservableCollection<FilterMode>),
             typeof(FilterControl),
-            new PropertyMetadata(new ObservableCollection<FilterModeEnum>()));
+            new PropertyMetadata(new ObservableCollection<FilterMode>()));
 
         public static readonly DependencyProperty AvailableModesProperty = AvailableModesKey.DependencyProperty;
 
@@ -111,23 +111,23 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 
         private void UpdateAvailableModes()
         {
-            var newModes = new ObservableCollection<FilterModeEnum>();
+            var newModes = new ObservableCollection<FilterMode>();
 
-            if (FilterType == FilterTypeEnum.Text)
+            if (FilterType == FilterType.Text)
             {
-                newModes.Add(FilterModeEnum.Contains);
-                newModes.Add(FilterModeEnum.NotContains);
-                newModes.Add(FilterModeEnum.Equal);
-                newModes.Add(FilterModeEnum.NotEqual);
+                newModes.Add(FilterMode.Contains);
+                newModes.Add(FilterMode.NotContains);
+                newModes.Add(FilterMode.Equal);
+                newModes.Add(FilterMode.NotEqual);
             }
-            else if (FilterType == FilterTypeEnum.Number)
+            else if (FilterType == FilterType.Number)
             {
-                newModes.Add(FilterModeEnum.Equal);
-                newModes.Add(FilterModeEnum.NotEqual);
-                newModes.Add(FilterModeEnum.Greater);
-                newModes.Add(FilterModeEnum.Less);
-                newModes.Add(FilterModeEnum.GreaterOrEqual);
-                newModes.Add(FilterModeEnum.LessOrEqual);
+                newModes.Add(FilterMode.Equal);
+                newModes.Add(FilterMode.NotEqual);
+                newModes.Add(FilterMode.Greater);
+                newModes.Add(FilterMode.Less);
+                newModes.Add(FilterMode.GreaterOrEqual);
+                newModes.Add(FilterMode.LessOrEqual);
             }
 
             AvailableModes = newModes;

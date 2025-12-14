@@ -1,4 +1,4 @@
-﻿using CORE;
+﻿using Strzelecki_Baranowski.DuckApp.CORE;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 

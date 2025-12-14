@@ -1,6 +1,6 @@
 ﻿
 using System.Reflection;
-using CORE;
+using Strzelecki_Baranowski.DuckApp.CORE;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.BL
@@ -11,36 +11,36 @@ namespace Strzelecki_Baranowski.DuckApp.BL
         private readonly IDataAccessObject _dao;
 
 
-        public BLC(string? config_path, string? type) {
+        public BLC(string? configPath, string? type) {
             //Assembly DAO = Assembly.UnsafeLoadFrom(config_path);
             //Type ti = DAO.GetType(type);
             //var o = Activator.CreateInstance(ti, new object[] { "" });
 
-            if (string.IsNullOrWhiteSpace(config_path))
-                throw new ArgumentNullException(nameof(config_path), "Assembly path cannot be empty.");
+            if (string.IsNullOrWhiteSpace(configPath))
+                throw new ArgumentNullException(nameof(configPath), "Assembly path cannot be empty.");
 
             if (string.IsNullOrWhiteSpace(type))
                 throw new ArgumentNullException(nameof(type), "Type name cannot be empty.");
 
-            if (!System.IO.File.Exists(config_path))
-                throw new FileNotFoundException($"Type name cannot be empty. { config_path}");
+            if (!System.IO.File.Exists(configPath))
+                throw new FileNotFoundException($"Type name cannot be empty. {configPath}");
 
             // Ładowanie assembly
             Assembly asm;
             try
             {
-                asm = Assembly.UnsafeLoadFrom(config_path);
+                asm = Assembly.UnsafeLoadFrom(configPath);
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException($"Failed to load assembly from {config_path}", ex);
+                throw new InvalidOperationException($"Failed to load assembly from {configPath}", ex);
             }
 
 
             // Pobranie typu
             var ti = asm.GetType(type);
             if (ti == null)
-                throw new TypeLoadException($"Type '{type}' not found in assembly '{config_path}'.");
+                throw new TypeLoadException($"Type '{type}' not found in assembly '{configPath}'.");
 
             var instance = Activator.CreateInstance(ti);
 

@@ -6,10 +6,171 @@
         xmlns:local="clr-namespace:Strzelecki_Baranowski.DuckApp.UI"
         xmlns:interfaces="clr-namespace:Strzelecki_Baranowski.DuckApp.INTERFACES;assembly=INTERFACES"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="DuckApp" Height="900" Width="1600"
+        Icon="/duck_logo.ico"
         Name="Okno">
 
-   
+
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryColor" Color="#3b82f6"/>
+        <SolidColorBrush x:Key="InactiveColor" Color="#e5e7eb"/>
+        <SolidColorBrush x:Key="HoverColor" Color="#bfdbfe"/>
+
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource InactiveColor}"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="5"/>
+
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="MinHeight" Value="45"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                        CornerRadius="6" 
+                        Background="{TemplateBinding Background}" 
+                        Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource HoverColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <SolidColorBrush x:Key="AddColor" Color="#10b981"/>
+        <SolidColorBrush x:Key="AddHover" Color="#34d399"/>
+
+        <SolidColorBrush x:Key="DeleteColor" Color="#ef4444"/>
+        <SolidColorBrush x:Key="DeleteHover" Color="#f87171"/>
+
+        <SolidColorBrush x:Key="EditColor" Color="#f59e0b"/>
+        <SolidColorBrush x:Key="EditHover" Color="#fbbf24"/>
+
+        <SolidColorBrush x:Key="DisabledBg" Color="#e5e7eb"/>
+        <SolidColorBrush x:Key="DisabledFg" Color="#9ca3af"/>
+
+        <Style x:Key="BaseActionButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="MinHeight" Value="45"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource DisabledBg}"/>
+                                <Setter Property="Foreground" Value="{StaticResource DisabledFg}"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding EditVisibility}" Value="Visible">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AddButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseActionButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource AddColor}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AddHover}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DeleteButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseActionButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource DeleteColor}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DeleteHover}"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding SelectedItem}" Value="{x:Null}">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="EditButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseActionButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource EditColor}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource EditHover}"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding SelectedItem}" Value="{x:Null}">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+
+        <Style x:Key="ModernBtn" TargetType="Button">
+            <Setter Property="Background" Value="#2563eb"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Template">
+
+                    <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" CornerRadius="8" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="10" Color="#2563eb" ShadowDepth="2" Opacity="0.3"/>
+                            </Border.Effect>
+
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1d4ed8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
+
+    </Window.Resources>
+
+
+
 
     <Grid>
 
@@ -28,12 +189,43 @@
             </Grid.RowDefinitions>
 
 
-            <UniformGrid Grid.Column="0" Grid.Row="0" Columns="2" Margin="5">
+            <!--<UniformGrid Grid.Column="0" Grid.Row="0" Columns="2" Margin="5">
                 <Button Content="Ducks" Command="{Binding ShowDucksCommand}" Padding="5,2"/>
                 <Button Content="Producers" Command="{Binding ShowProducersCommand}" Padding="5,2"/>
+            </UniformGrid> -->
+
+            <UniformGrid Grid.Column="0" Grid.Row="0" Columns="2" Margin="10">
+
+                <Button Content="Ducks" Command="{Binding ShowDucksCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ListType}" Value="ducks">
+                                    <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Producers" Command="{Binding ShowProducersCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ListType}" Value="producers">
+                                    <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
             </UniformGrid>
 
-            <Expander Grid.Row="1" 
+
+            <!--<Expander Grid.Row="1" 
                       Header="Filters"
                       ExpandDirection="Down"
                       Padding="5"
@@ -99,17 +291,224 @@
                         </Grid>
                     </StackPanel>
                 </Border>
+            </Expander>-->
+
+            <Expander Grid.Row="1" 
+          Header="Filters"
+          ExpandDirection="Down"
+          Padding="5"
+          Margin="0,0,0,10"
+          FontSize="14"
+          FontWeight="SemiBold"
+          Grid.IsSharedSizeScope="True">
+
+                <Expander.Resources>
+                    <Style TargetType="Button" x:Key="FilterButtonStyle">
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Height" Value="35"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="border" Property="Background" Value="#e5e7eb"/>
+                                            <Setter Property="Foreground" Value="#9ca3af"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Expander.Resources>
+
+                <Border Background="White" 
+            BorderBrush="#e5e7eb" 
+            BorderThickness="1" 
+            CornerRadius="10" 
+            Padding="15"
+            Margin="5">
+
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" Direction="270" ShadowDepth="2" Opacity="0.05"/>
+                    </Border.Effect>
+
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding ActiveFilters}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="FilterLabelColumn"/>
+                                            <ColumnDefinition Width="15"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" 
+                                       Text="{Binding PropertyName}" 
+                                       VerticalAlignment="Center" 
+                                       FontWeight="Medium"
+                                       Foreground="#4b5563"/>
+                                        <local:FilterControl Grid.Column="2" 
+                                                 FilterType="{Binding Type, Mode=TwoWay}" 
+                                                 FilterMode="{Binding Operator, Mode=TwoWay}" 
+                                                 FilterValue="{Binding Value, Mode=TwoWay}" 
+                                                 Height="30"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalAlignment="Stretch"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" 
+                        Content="Reset" 
+                        Command="{Binding ResetFiltersCommand}" 
+                        Style="{StaticResource FilterButtonStyle}"
+                        Background="#f3f4f6"
+                        Foreground="#374151"/>
+
+                            <Button Grid.Column="2" 
+                        Content="Apply" 
+                        Command="{Binding ApplyFiltersCommand}" 
+                        Style="{StaticResource FilterButtonStyle}"
+                        Background="#3b82f6" 
+                        Foreground="White"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
             </Expander>
 
-            <ListView Name="Lista" ItemsSource ="{Binding DisplayedList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
+            <!--<ListView Name="Lista" ItemsSource ="{Binding DisplayedList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
           SelectionMode="Single" Grid.Column="0" Grid.Row="2" Margin="5"
-              DisplayMemberPath="Name"/>
+              DisplayMemberPath="Name"/>-->
 
-            <UniformGrid Grid.Row="3" Grid.Column="0" Columns="3" Margin="5">
+            <ListView Name="Lista" 
+          ItemsSource="{Binding DisplayedList}" 
+          SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+          SelectionMode="Single"
+          Grid.Column="0" 
+          Grid.Row="2" 
+          Margin="5"
+          BorderThickness="0"
+          Background="Transparent"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Margin" Value="0,0,0,8"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border x:Name="ItemBorder" CornerRadius="10" Background="White" BorderBrush="#e5e7eb" BorderThickness="1" Padding="10">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="10" Direction="270" ShadowDepth="2" Opacity="0.05"/>
+                                        </Border.Effect>
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="ItemBorder" Property="Background" Value="#f0f9ff"/>
+                                            <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#bae6fd"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="ItemBorder" Property="Background" Value="#eff6ff"/>
+                                            <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#3b82f6"/>
+                                            <Setter TargetName="ItemBorder" Property="BorderThickness" Value="2"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.Resources>
+
+                    <DataTemplate DataType="{x:Type local:DuckViewModel}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" Background="#fef3c7" Margin="0,0,15,0">
+                                <TextBlock Text="🦆" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" Foreground="#1f2937"/>
+                                <TextBlock Text="{Binding ID, StringFormat=ID: {0}}" Foreground="#9ca3af" FontSize="12"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="2" 
+                           Text="{Binding Price, StringFormat={}{0:C} €}" 
+                           FontSize="18" FontWeight="Bold" Foreground="#059669" VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type local:ProducerViewModel}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" Background="#ede9fe" Margin="0,0,15,0">
+                                <TextBlock Text="🏭" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="SemiBold" Foreground="#1f2937"/>
+                                <TextBlock Text="{Binding ID, StringFormat=Producer ID: {0}}" Foreground="#9ca3af" FontSize="12"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+
+                </ListView.Resources>
+            </ListView>
+            <!--<UniformGrid Grid.Row="3" Grid.Column="0" Columns="3" Margin="5">
                   <Button Content="Add" Command="{Binding AddItemCommand}" Padding="5,2"/>
                 <Button Content="Delete" Command="{Binding DeleteItemCommand}" Padding="5,2"/>
                 <Button Content="Edit" Command="{Binding EditItemCommand}" Padding="5,2"/>
-            </UniformGrid> 
+            </UniformGrid>-->
+            <UniformGrid Grid.Row="3" Grid.Column="0" Columns="3" Margin="5 5 5 25" >
+
+                <Button Content="Add" 
+            Command="{Binding AddItemCommand}" 
+            Style="{StaticResource AddButtonStyle}" 
+            Padding="10,5"/>
+
+                <Button Content="Delete" 
+            Command="{Binding DeleteItemCommand}" 
+            Style="{StaticResource DeleteButtonStyle}" 
+            Padding="10,5"/>
+
+                <Button Content="Edit" 
+            Command="{Binding EditItemCommand}" 
+            Style="{StaticResource EditButtonStyle}" 
+            Padding="10,5"/>
+
+            </UniformGrid>
 
 
         </Grid>
@@ -146,7 +545,7 @@
            -->
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Column="1">
             <Grid>
-        <ContentControl  Name="DetailsView" Visibility="{Binding DetailsVisibility}"
+        <!--<ContentControl  Name="DetailsView" Visibility="{Binding DetailsVisibility}"
                 Content="{Binding ElementName=Lista, Path=SelectedItem}">
             <ContentControl.Resources>
 
@@ -161,26 +560,29 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition  Height="Auto"/>
                             <RowDefinition  Height="Auto"/>
+                            <RowDefinition  Height="Auto"/>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Content="Name"/>
-                        <Label Grid.Column="0" Grid.Row="2" Content="Description"/>
-                        <Label Grid.Column="0" Grid.Row="1" Content="Category"/>
-                        <Label Grid.Column="0" Grid.Row="3" Content="Producer Name"/>
-                        <Label Grid.Column="0" Grid.Row="4" Content="Price (€)"/>
+                                <Label Grid.Column="0" Grid.Row="0" Content="Name"/>
+                                <Label Grid.Column="0" Grid.Row="1" Content="ID"/>
+                                <Label Grid.Column="0" Grid.Row="3" Content="Description"/>
+                        <Label Grid.Column="0" Grid.Row="2" Content="Category"/>
+                        <Label Grid.Column="0" Grid.Row="4" Content="Producer Name"/>
+                        <Label Grid.Column="0" Grid.Row="5" Content="Price (€)"/>
                         <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}"/>
-                        <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Category}" />
-                        <TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding Description}"/>
+                                <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ID}" />
+                                <TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding Category}" />
+                                <TextBlock Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Description}"/>
                       
-                       <TextBlock Grid.Column="1" Grid.Row="3" TextWrapping="Wrap">
+                       <TextBlock Grid.Column="1" Grid.Row="4" TextWrapping="Wrap">
                             <Hyperlink Command="{Binding DataContext.ShowSpecifiedProducerCommand, RelativeSource={RelativeSource AncestorType=Window}}">
                                 <Run Text="{Binding ProducerName}" />
                             </Hyperlink>
                         </TextBlock> 
 
-                        <TextBlock Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Price}"/>
-                                <Image Grid.Column="1"  Grid.Row="5" Source="{Binding FullPhotoPath, TargetNullValue='photos/20.jpg', FallbackValue='photos/20.jpg'}" />
+                        <TextBlock Grid.Column="1" Grid.Row="5" TextWrapping="Wrap" Text="{Binding Price}"/>
+                                <Image Grid.Column="1"  Grid.Row="6" Source="{Binding FullPhotoPath, TargetNullValue='photos/20.jpg', FallbackValue='photos/20.jpg'}" />
 
 
                     </Grid>
@@ -197,28 +599,178 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
                         <Label Grid.Column="0" Grid.Row="0" Content="Name" />
-                        <Label Grid.Column="0" Grid.Row="1" Content="Website"/>
-                        <!--<Label Grid.Column="0" Grid.Row="2" Content="ID"/>-->
+                        <Label Grid.Column="0" Grid.Row="1" Content="ID"/>
+                        <Label Grid.Column="0" Grid.Row="2" Content="Website"/>
+                --><!--<Label Grid.Column="0" Grid.Row="2" Content="ID"/>--><!--
+                        <Button Grid.Column="0" Grid.Row="3" Width="Auto" Content="Show products" VerticalAlignment="Center" Margin="3" Command="{Binding DataContext.ShowDucksOfrRoducerCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
 
-                        <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
-                        <TextBlock Grid.Column="1" Grid.Row="1">
+                                <TextBlock Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name}" />
+                                <TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ID}" />
+                        <TextBlock Grid.Column="1" Grid.Row="2">
                             <Hyperlink Command="{Binding OpenLinkCommand}" 
                                         CommandParameter="{Binding Website}">
                                 <TextBlock TextWrapping="Wrap" Text="{Binding Website}" />
                             </Hyperlink>
                         </TextBlock>
-                        <!--<TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />-->
+                        --><!--<TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />--><!--
                     </Grid>
                 </DataTemplate>
 
             </ContentControl.Resources>
-        </ContentControl>
+        </ContentControl>-->
 
-        <ContentControl Name="EditView" Visibility="{Binding EditVisibility}"
+                <ContentControl Name="DetailsView" 
+                Visibility="{Binding DetailsVisibility}"
+                Content="{Binding ElementName=Lista, Path=SelectedItem}"
+                Margin="10">
+
+                    <ContentControl.Resources>
+
+                        <Style x:Key="LabelText" TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#9ca3af"/>
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Margin" Value="0,0,0,2"/>
+                        </Style>
+
+                        <Style x:Key="ValueText" TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#1f2937"/>
+                            <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="FontWeight" Value="Medium"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                            <Setter Property="Margin" Value="0,0,0,15"/>
+                        </Style>
+
+                        
+
+                        <DataTemplate DataType="{x:Type local:DuckViewModel}">
+                            <Border Background="White" CornerRadius="16" BorderBrush="#f3f4f6" BorderThickness="1">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="30" Direction="270" ShadowDepth="5" Opacity="0.08"/>
+                                </Border.Effect>
+
+                                <Grid Margin="20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" MinWidth="250"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" 
+                            CornerRadius="12" 
+                            ClipToBounds="True" 
+                            Background="#f9fafb" 
+                            BorderBrush="#e5e7eb"
+                            BorderThickness="1"
+                            VerticalAlignment="Top">
+                                        <Grid>
+                                            <Image Source="{Binding FullPhotoPath, TargetNullValue='photos/0.png', FallbackValue='photos/0.png'}" 
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" Margin="25,0,0,0">
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Border Background="#dbeafe" CornerRadius="4" Padding="8,4" Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding Category}" Foreground="#1e40af" FontWeight="Bold" FontSize="11"/>
+                                            </Border>
+                                            <Border Background="#f3f4f6" CornerRadius="4" Padding="8,4">
+                                                <TextBlock Text="{Binding ID, StringFormat=ID: {0}}" Foreground="#4b5563" FontWeight="SemiBold" FontSize="11"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <TextBlock Text="{Binding Name}" FontSize="32" FontWeight="Bold" Foreground="#111827" TextWrapping="Wrap" Margin="0,0,0,15"/>
+
+                                        <TextBlock Text="{Binding Price, StringFormat={}{0:C} €}" 
+                                   FontSize="36" 
+                                   FontWeight="Black" 
+                                   Foreground="#059669" 
+                                   Margin="0,0,0,20"/>
+
+                                        <Border Height="1" Background="#e5e7eb" Margin="0,0,0,20"/>
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Text="PRODUCER" Style="{StaticResource LabelText}"/>
+                                                <TextBlock Style="{StaticResource ValueText}">
+                                    <Hyperlink Command="{Binding DataContext.ShowSpecifiedProducerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                               Foreground="#2563eb" TextDecorations="None">
+                                        <Run Text="{Binding ProducerName}"/>
+                                    </Hyperlink>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <TextBlock Text="DESCRIPTION" Style="{StaticResource LabelText}"/>
+                                        <TextBlock Text="{Binding Description}" 
+                                   FontSize="15" 
+                                   Foreground="#4b5563" 
+                                   TextWrapping="Wrap" 
+                                   LineHeight="24"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+
+
+                        <DataTemplate DataType="{x:Type local:ProducerViewModel}">
+                            <Border Background="White" CornerRadius="16" BorderBrush="#f3f4f6" BorderThickness="1" Padding="30">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="30" Direction="270" ShadowDepth="5" Opacity="0.08"/>
+                                </Border.Effect>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Width="100" Height="100" CornerRadius="20" Background="#f5f3ff" VerticalAlignment="Top">
+                                        <TextBlock Text="🏭" FontSize="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="PRODUCER PROFILE" Foreground="#8b5cf6" FontWeight="Bold" FontSize="12" Margin="0,0,0,5"/>
+
+                                        <TextBlock Text="{Binding Name}" FontSize="32" FontWeight="Bold" Foreground="#1f2937" Margin="0,0,0,5"/>
+                                        <TextBlock Text="{Binding ID, StringFormat=Producer ID: {0}}" FontSize="14" Foreground="#9ca3af" Margin="0,0,0,20"/>
+
+                                        <Border Height="1" Background="#e5e7eb" Margin="0,0,0,20"/>
+
+                                        <TextBlock Text="WEBSITE" Style="{StaticResource LabelText}"/>
+                                        <TextBlock Style="{StaticResource ValueText}">
+                            <Hyperlink Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Website}" Foreground="#2563eb">
+                                <TextBlock Text="{Binding Website}"/>
+                            </Hyperlink>
+                        </TextBlock>
+
+                                        <Button Content="View All Products" 
+                                Command="{Binding DataContext.ShowDucksOfrRoducerCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Style="{StaticResource ModernBtn}"
+                                HorizontalAlignment="Left"
+                                Margin="0,10,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+
+                    </ContentControl.Resources>
+                </ContentControl>
+
+                <!--<ContentControl Name="EditView" Visibility="{Binding EditVisibility}"
         Content="{Binding DummyObject}">
             <ContentControl.Resources>
 
@@ -250,10 +802,21 @@
 
                                 <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <!--<TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="Pamiętać o combo boxie na producera!!!!!"/> -->
-                        <ComboBox Grid.Column="1" SelectedItem="{Binding ProducerVM}" Grid.Row="3"  DisplayMemberPath="Name" ItemsSource="{Binding DataContext.ProducerVM.Producers , RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        --><!--<TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="Pamiętać o combo boxie na producera!!!!!"/> --><!--
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding ProducerVM}" Grid.Row="3"   ItemsSource="{Binding DataContext.ProducerVM.Producers , RelativeSource={RelativeSource AncestorType=Window}}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                                <Run Text="{Binding Name, Mode=OneWay}"/>
+                                                <Run Text="  ("/>
+                                                <Run Text="{Binding ID, Mode=OneWay}"/>
+                                                <Run Text=")"/>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                                 <TextBox Grid.Column="1" Grid.Row="4" TextWrapping="Wrap" Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}"/>
-                                <!--<TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Photo, UpdateSourceTrigger=PropertyChanged}"/>-->
+                                --><!--<TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Photo, UpdateSourceTrigger=PropertyChanged}"/>--><!--
                                 <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Vertical">
 
                                     <Image Source="{Binding FullPhotoPath, TargetNullValue='photos/20.jpg', FallbackValue='photos/20.jpg'}" 
@@ -300,7 +863,7 @@
 
                         <TextBox Grid.Column="1" Grid.Row="0" TextWrapping="Wrap" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBox Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Website, UpdateSourceTrigger=PropertyChanged}" />
-                        <!--<TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />-->
+                        --><!--<TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="{Binding ID}" />--><!--
                 
 
 
@@ -313,7 +876,234 @@
                 </DataTemplate>
 
             </ContentControl.Resources>
-        </ContentControl>
+        </ContentControl>-->
+
+                <ContentControl Name="EditView" 
+                Visibility="{Binding EditVisibility}"
+                Content="{Binding DummyObject}"
+                Margin="10">
+
+                    <ContentControl.Resources>
+                        <Style x:Key="FormLabel" TargetType="Label">
+                            <Setter Property="Foreground" Value="#6b7280"/>
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Padding" Value="0,0,0,4"/>
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+                        </Style>
+
+                        <Style x:Key="ModernInput" TargetType="TextBox">
+                            <Setter Property="Padding" Value="10,8"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="Background" Value="#f9fafb"/>
+                            <Setter Property="BorderBrush" Value="#d1d5db"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ScrollViewer x:Name="PART_ContentHost"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#3b82f6"/>
+                                                <Setter TargetName="border" Property="Background" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="Validation.HasError" Value="True">
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#ef4444"/>
+                                                <Setter TargetName="border" Property="Background" Value="#fef2f2"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style x:Key="ModernCombo" TargetType="ComboBox">
+                            <Setter Property="Padding" Value="10,8"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="Background" Value="#f9fafb"/>
+                            <Setter Property="BorderBrush" Value="#d1d5db"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="ItemContainerStyle">
+                                <Setter.Value>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Padding" Value="5"/>
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style x:Key="PrimaryBtn" TargetType="Button" BasedOn="{StaticResource ModernBtn}"/>
+                        <Style x:Key="SecondaryBtn" TargetType="Button">
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="Foreground" Value="#374151"/>
+                            <Setter Property="BorderBrush" Value="#d1d5db"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Padding" Value="15,8"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#f3f4f6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+
+                        <DataTemplate DataType="{x:Type local:DuckViewModel}">
+                            <Border Background="White" CornerRadius="16" BorderBrush="#e5e7eb" BorderThickness="1" Padding="25">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="30" Direction="270" ShadowDepth="5" Opacity="0.1"/>
+                                </Border.Effect>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="{Binding DataContext.FormsHeader, RelativeSource={RelativeSource AncestorType=Window}}" FontSize="24" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,20"/>
+
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <Label Content="NAME" Style="{StaticResource FormLabel}"/>
+                                            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" Style="{StaticResource ModernInput}" Margin="0,0,0,15"/>
+
+                                            <Grid Margin="0,0,0,15">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="15"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0">
+                                                    <Label Content="CATEGORY" Style="{StaticResource FormLabel}"/>
+                                                    <ComboBox SelectedItem="{Binding Category}" ItemsSource="{Binding DataContext.CategoryValues, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource ModernCombo}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2">
+                                                    <Label Content="PRICE (€)" Style="{StaticResource FormLabel}"/>
+                                                    <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernInput}"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <Label Content="PRODUCER" Style="{StaticResource FormLabel}"/>
+                                            <ComboBox SelectedItem="{Binding ProducerVM}" ItemsSource="{Binding DataContext.ProducerVM.Producers, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource ModernCombo}" Margin="0,0,0,15">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock>
+                                            <Run Text="{Binding Name, Mode=OneWay}" FontWeight="Bold"/>
+                                            <Run Text=" (" Foreground="Gray"/>
+                                            <Run Text="{Binding ID, Mode=OneWay}" Foreground="Gray"/>
+                                            <Run Text=")" Foreground="Gray"/>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+
+                                            <Label Content="DESCRIPTION" Style="{StaticResource FormLabel}"/>
+                                            <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernInput}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2">
+                                            <Label Content="PHOTO PREVIEW" Style="{StaticResource FormLabel}"/>
+
+                                            <Border CornerRadius="8" BorderBrush="#e5e7eb" BorderThickness="1" Background="#f9fafb" Height="200" Margin="0,0,0,10">
+                                                <Grid>
+                                                    <TextBlock Text="No Image" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#9ca3af" FontSize="16"/>
+
+                                                    <Border CornerRadius="8" ClipToBounds="True">
+                                                        <Image Source="{Binding FullPhotoPath, TargetNullValue='photos/0.png', FallbackValue='photos/0.png'}" Stretch="Uniform"/>
+                                                    </Border>
+                                                </Grid>
+                                            </Border>
+
+                                            <Button Content="Choose Photo..." Command="{Binding SelectPhotoCommand}" Style="{StaticResource SecondaryBtn}" Margin="0,0,0,5"/>
+
+                                            <TextBlock Text="{Binding Photo}" FontSize="10" Foreground="#9ca3af" TextWrapping="Wrap" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Grid.Row="2" Margin="0,20,0,0">
+
+                                        <ListBox ItemsSource="{Binding DataContext.Bledy, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                 BorderThickness="0" Background="#fef2f2" Foreground="#b91c1c" Margin="0,0,0,15">
+                                            <ListBox.ItemContainerStyle>
+                                                <Style TargetType="ListBoxItem">
+                                                    <Setter Property="Padding" Value="5"/>
+                                                    <Setter Property="FontSize" Value="13"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </Style>
+                                            </ListBox.ItemContainerStyle>
+                                        </ListBox>
+
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                            <Button Content="Cancel" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource SecondaryBtn}" Width="100" Margin="0,0,10,0"/>
+                                            <Button Content="Save Changes" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource PrimaryBtn}" Width="140"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+
+
+                        <DataTemplate DataType="{x:Type local:ProducerViewModel}">
+                            <Border Background="White" CornerRadius="16" BorderBrush="#e5e7eb" BorderThickness="1" Padding="25">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="30" Direction="270" ShadowDepth="5" Opacity="0.1"/>
+                                </Border.Effect>
+
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="50" Height="50" CornerRadius="10" Background="#ede9fe" Margin="0,0,15,0">
+                                            <TextBlock Text="🏭" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding DataContext.FormsHeader, RelativeSource={RelativeSource AncestorType=Window}}" FontSize="24" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,20"/>
+                                    </Grid>
+
+                                    <Label Content="COMPANY NAME" Style="{StaticResource FormLabel}"/>
+                                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernInput}" Margin="0,0,0,15"/>
+
+                                    <Label Content="WEBSITE URL" Style="{StaticResource FormLabel}"/>
+                                    <TextBox Text="{Binding Website, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernInput}" Margin="0,0,0,25"/>
+
+                                    <ListBox ItemsSource="{Binding DataContext.Bledy, RelativeSource={RelativeSource AncestorType=Window}}" 
+                             BorderThickness="0" Background="#fef2f2" Foreground="#b91c1c" Margin="0,0,0,15"/>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="Cancel" Command="{Binding DataContext.CancelCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource SecondaryBtn}" Width="100" Margin="0,0,10,0"/>
+                                        <Button Content="Save Company" Command="{Binding DataContext.SaveCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource PrimaryBtn}" Width="140"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+
+                    </ContentControl.Resources>
+                </ContentControl>
+
+
             </Grid>
         </ScrollViewer>
 
@@ -321,7 +1111,6 @@
         <Button Width="Auto" Content="edytuj kaczkę" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center"  Click="ModifyDuck"/> -->
 
     </Grid>
-
 
 
 

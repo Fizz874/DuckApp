@@ -29,11 +29,9 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
 
             string dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-            // 2. Weź katalog, w którym ten plik leży
-            string dllDirectory = System.IO.Path.GetDirectoryName(dllPath);
+            string? dllDirectory = System.IO.Path.GetDirectoryName(dllPath);
 
-            // 3. Sklej z nazwą bazy
-            string dbPath = System.IO.Path.Combine(dllDirectory, "ducks.db");
+            string dbPath = System.IO.Path.Combine(dllDirectory ?? "", "ducks.db");
 
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
 
@@ -58,13 +56,13 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
 
 
             string dllPath = Assembly.GetExecutingAssembly().Location;
-            string dllDirectory = Path.GetDirectoryName(dllPath);
-            string path = Path.Combine(dllDirectory, "seed.sql");
+            string? dllDirectory = Path.GetDirectoryName(dllPath);
+            string path = Path.Combine(dllDirectory ?? "", "seed.sql");
 
 
             if (!File.Exists(path)) return;
 
-            string sql = File.ReadAllText(path);
+            string sql = File.ReadAllText(path, Encoding.UTF8);
 
             this.Database.ExecuteSqlRaw(sql);
         }

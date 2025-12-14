@@ -20,7 +20,7 @@ INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category)
 VALUES (1, 'Minecraft - Zombie (Mini)', 1, 9.99, 'He crawls straight out of the pixelated world of Minecraft and into your bath paradise. With his angular design, green complexion and typical blocky look, this undead creature is probably the most charming bath guest you''ve ever had.', 'photos/1.jpg', 1);
 
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
-VALUES (2, 'Power Rangers ñ Red Ranger', 1, 19.99, 'Just in case some aliens are thinking of taking over the duck pond, the Mighty Morphin Power Rangers are coming. Red Ranger is suited and booted in his iconic suit.', 'photos/2.jpg', 2);
+VALUES (2, 'Power Rangers - Red Ranger', 1, 19.99, 'Just in case some aliens are thinking of taking over the duck pond, the Mighty Morphin Power Rangers are coming. Red Ranger is suited and booted in his iconic suit.', 'photos/2.jpg', 2);
 
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
 VALUES (3, 'Jurassic Park - T-Rex (Mini)', 1, 9.99, 'The Jurassic Park mini T-Rex rubber ducky is an absolute must-have for all dino fans. With its fearsome yet somehow cute look, it brings an extra dose of Jurassic charm to your bathroom.', 'photos/3.jpg', 2);
@@ -32,20 +32,20 @@ INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category)
 VALUES (5, 'Sonic the Hedgehog (Boxed)', 1, 19.99, 'The Sonic the Hedgehog rubber duck is an absolute must-have for fans! With its classic look from 1991, this rubber duck brings nostalgia and fun to any collection.', 'photos/5.jpg', 1);
 
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
-VALUES (6, 'Shrek', 1, 24.99, 'This rubber duck doesn''t come from the fairy tale forest ñ it comes straight from the swamp! Shrek, probably the most famous ogre in film history, has turned into a squeaky duck.', 'photos/6.jpg', 2);
+VALUES (6, 'Shrek', 1, 24.99, 'This rubber duck doesn''t come from the fairy tale forest - it comes straight from the swamp! Shrek, probably the most famous ogre in film history, has turned into a squeaky duck.', 'photos/6.jpg', 2);
 
 -- Kaczki od Rubbaducks (ProducerID = 2)
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
 VALUES (7, 'Duckphin - Delfin', 2, 13.49, 'Duckphin, the squeaking master of waves! The fusion of a rubber duck with the elegance of a dolphin.', 'photos/7.jpg', 3);
 
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
-VALUES (8, 'Duckerball - Fuﬂball', 2, 13.49, 'A duck made out of a football. What don''t you understand?!', 'photos/8.jpg', 4);
+VALUES (8, 'Duckerball - Fussball', 2, 13.49, 'A duck made out of a football. What don''t you understand?!', 'photos/8.jpg', 4);
 
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
 VALUES (9, 'Hero - Feuerwehrmann', 2, 13.49, 'Some ducks have jobs. This one is a firefighter.', 'photos/9.jpg', 5);
 
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
-VALUES (10, 'Duckaroo - K‰nguru', 2, 13.49, 'Proudly presenting the Duckaroo duck - a wonderful blend of rubber duck and kangaroo! Yes, you read it right, a kangaroo with a baby in its pouch.', 'photos/10.jpg', 3);
+VALUES (10, 'Duckaroo - Kanguru', 2, 13.49, 'Proudly presenting the Duckaroo duck - a wonderful blend of rubber duck and kangaroo! Yes, you read it right, a kangaroo with a baby in its pouch.', 'photos/10.jpg', 3);
 
 -- Kaczki od Locomocean (ProducerID = 3)
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
@@ -102,6 +102,6 @@ INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category)
 VALUES (27, 'Einstein Rubber Duck', 5, 11.49, 'A symbol of brilliance, a nod to all physics enthusiasts, and proof that even a little duckling has enough intellect to comprehend physics.', 'photos/27.jpg', 6);
 
 INSERT INTO Ducks (ID, Name, ProducerID, Price, Description, Photo, Category) 
-VALUES (28, 'Old Fashioned Pilot Duck', 5, 11.49, 'Pretty self-explanatory. Itís a duck with a dream.', 'photos/28.jpg', 5);
+VALUES (28, 'Old Fashioned Pilot Duck', 5, 11.49, 'Pretty self-explanatory. It''s a duck with a dream.', 'photos/28.jpg', 5);
 
 COMMIT;

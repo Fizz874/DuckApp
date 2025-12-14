@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CORE
+namespace Strzelecki_Baranowski.DuckApp.CORE
 {
-    public enum FilterModeEnum
+    public enum FilterMode
     {
         Equal,
         Greater,

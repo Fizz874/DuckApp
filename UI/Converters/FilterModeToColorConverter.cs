@@ -1,4 +1,4 @@
-﻿using CORE;
+﻿using Strzelecki_Baranowski.DuckApp.CORE;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,22 +14,22 @@ namespace Strzelecki_Baranowski.DuckApp.UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not FilterModeEnum mode)
+            if (value is not FilterMode mode)
                 return Brushes.Black;
 
             return mode switch
             {
-                FilterModeEnum.Equal => Brushes.Green,
-                FilterModeEnum.NotEqual => Brushes.Red,
+                FilterMode.Equal => Brushes.Green,
+                FilterMode.NotEqual => Brushes.Red,
 
-                FilterModeEnum.Greater => Brushes.SteelBlue,
-                FilterModeEnum.GreaterOrEqual => Brushes.SteelBlue,
+                FilterMode.Greater => Brushes.SteelBlue,
+                FilterMode.GreaterOrEqual => Brushes.SteelBlue,
 
-                FilterModeEnum.Less => Brushes.DarkOrange,
-                FilterModeEnum.LessOrEqual => Brushes.DarkOrange,
+                FilterMode.Less => Brushes.DarkOrange,
+                FilterMode.LessOrEqual => Brushes.DarkOrange,
 
-                FilterModeEnum.Contains => Brushes.Green,
-                FilterModeEnum.NotContains => Brushes.Red,
+                FilterMode.Contains => Brushes.Green,
+                FilterMode.NotContains => Brushes.Red,
 
                 _ => Brushes.Black
             };

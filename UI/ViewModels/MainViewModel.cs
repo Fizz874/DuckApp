@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CORE;
+using Strzelecki_Baranowski.DuckApp.CORE;
 using System.Linq;
 using Strzelecki_Baranowski.DuckApp.BL;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
@@ -33,7 +33,7 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
             }
         }
 
-        public DuckListViewModel DuckVM { get; set; } //TODO private?
+        public DuckListViewModel DuckVM { get; set; } 
         public ProducerListViewModel ProducerVM { get; set; }
 
 
@@ -56,24 +56,27 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         }
         [ObservableProperty] ObservableCollection<FilterViewModel> _activeFilters;
         public ObservableCollection<FilterViewModel> DuckFilters { get; set; } = new ObservableCollection<FilterViewModel>() {
-            new FilterViewModel {PropertyName = "ID", Type=FilterTypeEnum.Number, Operator=FilterModeEnum.Equal, Value="" },
-            new FilterViewModel {PropertyName = "ProducerName", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
-            new FilterViewModel {PropertyName = "Price", Type=FilterTypeEnum.Number, Operator=FilterModeEnum.Equal, Value="" },
-            new FilterViewModel {PropertyName = "Name", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
-            new FilterViewModel {PropertyName = "Description", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
-            new FilterViewModel {PropertyName = "Category", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
+            new FilterViewModel {PropertyName = "ID", Type=FilterType.Number, Operator=FilterMode.Equal, Value="" },
+            new FilterViewModel {PropertyName = "ProducerName", Type=FilterType.Text, Operator=FilterMode.Contains, Value="" },
+            new FilterViewModel {PropertyName = "ProducerID", Type=FilterType.Number, Operator=FilterMode.Equal, Value="" },
+            new FilterViewModel {PropertyName = "Price", Type=FilterType.Number, Operator=FilterMode.Equal, Value="" },
+            new FilterViewModel {PropertyName = "Name", Type=FilterType.Text, Operator=FilterMode.Contains, Value="" },
+            new FilterViewModel {PropertyName = "Description", Type=FilterType.Text, Operator=FilterMode.Contains, Value="" },
+            new FilterViewModel {PropertyName = "Category", Type=FilterType.Text, Operator=FilterMode.Contains, Value="" },
         };
 
         public ObservableCollection<FilterViewModel> ProducerFilters { get; set; } = new ObservableCollection<FilterViewModel>() {
-            new FilterViewModel {PropertyName = "ID", Type=FilterTypeEnum.Number, Operator=FilterModeEnum.Equal, Value="" },
-            new FilterViewModel {PropertyName = "Name", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
-            new FilterViewModel {PropertyName = "Website", Type = FilterTypeEnum.Text, Operator = FilterModeEnum.Contains, Value="" }
+            new FilterViewModel {PropertyName = "ID", Type=FilterType.Number, Operator=FilterMode.Equal, Value="" },
+            new FilterViewModel {PropertyName = "Name", Type=FilterType.Text, Operator=FilterMode.Contains, Value="" },
+            new FilterViewModel {PropertyName = "Website", Type = FilterType.Text, Operator = FilterMode.Contains, Value="" }
         };
 
         [RelayCommand]
         public void ApplyFilters()
         {
             if (List == null) return;
+
+            var previouslySelected = SelectedItem;
 
             var query = List.Cast<object>();
 
@@ -88,6 +91,12 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
             {
                 DisplayedList.Add(item);
             }
+
+            if (previouslySelected != null && DisplayedList.Contains(previouslySelected))
+            {
+                SelectedItem = previouslySelected;
+            }
+
         }
 
         [RelayCommand]
@@ -96,10 +105,10 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
             foreach (var filter in ActiveFilters)
             {
                 filter.Value = "";
-                if (filter.Type == FilterTypeEnum.Text)
-                    filter.Operator = FilterModeEnum.Contains;
+                if (filter.Type == FilterType.Text)
+                    filter.Operator = FilterMode.Contains;
                 else
-                    filter.Operator = FilterModeEnum.Equal;
+                    filter.Operator = FilterMode.Equal;
             }
             ApplyFilters();
         }
@@ -119,6 +128,8 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         [ObservableProperty]
         private Visibility _detailsVisibility = Visibility.Visible;
 
+        [ObservableProperty]
+        private string? _formsHeader;
 
         //[ObservableProperty]
         //private DuckViewModel _dummyDuck;
@@ -127,26 +138,21 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         //private ProducerViewModel _dummyProducer;
 
         [ObservableProperty]
-        private object _dummyObject;
+        private object? _dummyObject;
 
         partial void OnDummyObjectChanged(object? oldValue, object? newValue)
         {
-            // 1. WYREJESTROWANIE (ODPIĘCIE) STAREGO OBIEKTU
-            // Rzutujemy starego object na INotifyDataErrorInfo, aby odpiąć zdarzenie.
+
             if (oldValue is INotifyDataErrorInfo oldDataErrorInfo)
             {
                 oldDataErrorInfo.ErrorsChanged -= DummyObject_ErrorsChanged;
             }
 
-            // 2. REJESTRACJA (PODPIĘCIE) NOWEGO OBIEKTU
-            // Rzutujemy nowego object na INotifyDataErrorInfo, aby podpiąć zdarzenie.
             if (newValue is INotifyDataErrorInfo newDataErrorInfo)
             {
                 newDataErrorInfo.ErrorsChanged += DummyObject_ErrorsChanged;
             }
 
-            // 3. POWIADOMIENIE WIDOKU
-            // Zawsze powiadamiamy, że lista błędów mogła się zmienić
             OnPropertyChanged(nameof(Bledy));
         }
         private void DummyObject_ErrorsChanged(object? sender, System.ComponentModel.DataErrorsChangedEventArgs e)
@@ -193,6 +199,24 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
 
         }
 
+        [RelayCommand]
+        private void ShowDucksOfrRoducer()
+        {
+            var producerVM = SelectedItem as ProducerViewModel;
+            if (producerVM == null)
+                return;
+
+            List = DuckVM.Ducks;
+            ListType = "ducks";
+            ActiveFilters = DuckFilters;
+            ResetFilters();
+            ActiveFilters.FirstOrDefault(x => x.PropertyName == "ProducerID")!.Value = producerVM.ID.ToString();
+            ApplyFilters();
+
+        }
+
+
+
         [RelayCommand(CanExecute = nameof(CanEdit))]
         private void AddItem()
         {
@@ -201,7 +225,9 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
 
             if (ListType == "ducks")
             {
-               
+                FormsHeader = "Add duck";
+
+
                 var newduck  = new DuckViewModel(_businessLogic.GetNewDuck(), /*ProducerVM.Producers.FirstOrDefault(x=>x.ID==0)*/null) ;
                 newduck.ID = -1;
                 newduck.Name = "";
@@ -209,7 +235,12 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
             }
             else
             {
-                DummyObject = new ProducerViewModel(_businessLogic.GetNewProducer());
+                FormsHeader = "Add producer";
+
+                var newproducer = new ProducerViewModel(_businessLogic.GetNewProducer());
+                newproducer.ID = -1;
+                newproducer.Name = "";
+                DummyObject = newproducer;
             }
 
             EditVisibility = Visibility.Visible;
@@ -303,13 +334,15 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         private void EditItem()
         {
             if (SelectedItem == null) return;
+            
+
             //if (SelectedItem.GetType() == typeof(DuckViewModel))
             if (SelectedItem is DuckViewModel duckVM)
             {
                 //var duckVM = SelectedItem as DuckViewModel;
                 //if (duckVM == null) return;
+                FormsHeader = "Edit duck";
 
-                
                 DummyObject = duckVM.Clone(_businessLogic.GetNewDuck());
 
             }
@@ -317,7 +350,7 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
             {
                 //var prodVM = SelectedItem as ProducerViewModel;
                 //if (prodVM == null) return;
-
+                FormsHeader = "Edit producer";
                 DummyObject = prodVM.Clone(_businessLogic.GetNewProducer());  
             }
 
