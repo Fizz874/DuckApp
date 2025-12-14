@@ -22,6 +22,7 @@
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -32,12 +33,79 @@
                 <Button Content="Producers" Command="{Binding ShowProducersCommand}" Padding="5,2"/>
             </UniformGrid>
 
+            <Expander Grid.Row="1" 
+                      Header="Filters"
+                      ExpandDirection="Down"
+                      Padding="5"
+                      Grid.IsSharedSizeScope="True">
+                <Border Background="#FAFAFA" 
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="4" 
+                        Padding="10">
 
-            <ListView Name="Lista" ItemsSource ="{Binding List}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
-          SelectionMode="Single" Grid.Column="0" Grid.Row="1" Margin="5"
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding ActiveFilters}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="FilterLabelColumn"/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Grid.Column="0" 
+                                               Content="{Binding PropertyName}" 
+                                               VerticalAlignment="Center" 
+                                               FontWeight="SemiBold"
+                                               Foreground="#555"/>
+
+                                        <local:FilterControl Grid.Column="2" 
+                                                             FilterType="{Binding Type, Mode=TwoWay}" 
+                                                             FilterMode="{Binding Operator, Mode=TwoWay}" 
+                                                             FilterValue="{Binding Value, Mode=TwoWay}" 
+                                                             Height="28"
+                                                             VerticalAlignment="Center"
+                                                             HorizontalAlignment="Stretch"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Grid Margin="0,15,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" 
+                                    Content="Reset" 
+                                    Command="{Binding ResetFiltersCommand}" 
+                                    Height="30"
+                                    Background="White"
+                                    BorderBrush="#CCCCCC"
+                                    Foreground="Black"/>
+
+                            <Button Grid.Column="2" 
+                                    Content="Apply" 
+                                    Command="{Binding ApplyFiltersCommand}" 
+                                    Height="30"
+                                    FontWeight="Bold"
+                                    Background="#007ACC"
+                                    Foreground="White"
+                                    BorderThickness="0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Expander>
+
+            <ListView Name="Lista" ItemsSource ="{Binding DisplayedList}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" 
+          SelectionMode="Single" Grid.Column="0" Grid.Row="2" Margin="5"
               DisplayMemberPath="Name"/>
 
-            <UniformGrid Grid.Row="2" Grid.Column="0" Columns="3" Margin="5">
+            <UniformGrid Grid.Row="3" Grid.Column="0" Columns="3" Margin="5">
                   <Button Content="Add" Command="{Binding AddItemCommand}" Padding="5,2"/>
                 <Button Content="Delete" Command="{Binding DeleteItemCommand}" Padding="5,2"/>
                 <Button Content="Edit" Command="{Binding EditItemCommand}" Padding="5,2"/>

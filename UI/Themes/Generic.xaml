@@ -1,0 +1,77 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Strzelecki_Baranowski.DuckApp.UI">
+
+
+    
+    <Style TargetType="{x:Type local:FilterControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:FilterControl}">
+                    <ControlTemplate.Resources>
+                        <local:FilterModeToIconConverter x:Key="ModeToIconConverter"/>
+                        <local:FilterModeToColorConverter x:Key="ModeToColorConverter"/>
+                    </ControlTemplate.Resources>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" VerticalAlignment="Stretch" x:Name="MaskContainer">
+
+                            <Border Background="White" CornerRadius="5 0 0 5">
+
+                                <Border.OpacityMask>
+                                    <VisualBrush Stretch="Fill">
+                                        <VisualBrush.Visual>
+                                            <Viewbox Stretch="Fill">
+                                                <Border
+                                                        Width="10000"
+                                                        Height="10000"
+                                                        Background="Black"
+                                                        CornerRadius="5 0 0 5"/>
+                                            </Viewbox>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Border.OpacityMask>
+
+                                <ComboBox BorderThickness="0" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                                      ItemsSource="{Binding AvailableModes, RelativeSource={RelativeSource TemplatedParent}}"
+                                      SelectedItem="{Binding FilterMode, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource ModeToIconConverter}}" 
+                                                       Foreground="{Binding Converter={StaticResource ModeToColorConverter}}"
+                                               FontSize="12" 
+                                               FontWeight="ExtraBold"
+                                               TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Border>
+
+                            <Border CornerRadius="5 0 0 5" BorderBrush="Black" BorderThickness="1" Background="Transparent" IsHitTestVisible="False"/>
+
+                        </Grid>
+
+                        <TextBox Grid.Column="1"
+                             Text="{Binding FilterValue, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}" 
+                             VerticalContentAlignment="Center"
+                             VerticalAlignment="Stretch"
+                             HorizontalAlignment="Stretch">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="0 5 5 0"/>
+                                    <Setter Property="BorderBrush" Value="Gray"/>
+                                    <Setter Property="BorderThickness" Value="0 1 1 1"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

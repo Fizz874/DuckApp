@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Documents;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CORE;
+using System.Linq;
 using Strzelecki_Baranowski.DuckApp.BL;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 using Strzelecki_Baranowski.DuckApp.UI;
@@ -36,6 +38,7 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
 
 
 
+
         public MainViewModel(BLC businessLogic) {
 
 
@@ -47,11 +50,65 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
             ProducerVM = new ProducerListViewModel(producers);
             DuckVM = new DuckListViewModel(ducks, ProducerVM);
             _list = DuckVM.Ducks;
+            ActiveFilters = DuckFilters;
+            ApplyFilters();
 
         }
+        [ObservableProperty] ObservableCollection<FilterViewModel> _activeFilters;
+        public ObservableCollection<FilterViewModel> DuckFilters { get; set; } = new ObservableCollection<FilterViewModel>() {
+            new FilterViewModel {PropertyName = "ID", Type=FilterTypeEnum.Number, Operator=FilterModeEnum.Equal, Value="" },
+            new FilterViewModel {PropertyName = "ProducerName", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
+            new FilterViewModel {PropertyName = "Price", Type=FilterTypeEnum.Number, Operator=FilterModeEnum.Equal, Value="" },
+            new FilterViewModel {PropertyName = "Name", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
+            new FilterViewModel {PropertyName = "Description", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
+            new FilterViewModel {PropertyName = "Category", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
+        };
+
+        public ObservableCollection<FilterViewModel> ProducerFilters { get; set; } = new ObservableCollection<FilterViewModel>() {
+            new FilterViewModel {PropertyName = "ID", Type=FilterTypeEnum.Number, Operator=FilterModeEnum.Equal, Value="" },
+            new FilterViewModel {PropertyName = "Name", Type=FilterTypeEnum.Text, Operator=FilterModeEnum.Contains, Value="" },
+            new FilterViewModel {PropertyName = "Website", Type = FilterTypeEnum.Text, Operator = FilterModeEnum.Contains, Value="" }
+        };
+
+        [RelayCommand]
+        public void ApplyFilters()
+        {
+            if (List == null) return;
+
+            var query = List.Cast<object>();
+
+            foreach (var filter in ActiveFilters)
+            {
+                query = query.Where(item => filter.IsMatch(item));
+            }
+
+            DisplayedList.Clear();
+
+            foreach (var item in query)
+            {
+                DisplayedList.Add(item);
+            }
+        }
+
+        [RelayCommand]
+        public void ResetFilters()
+        {
+            foreach (var filter in ActiveFilters)
+            {
+                filter.Value = "";
+                if (filter.Type == FilterTypeEnum.Text)
+                    filter.Operator = FilterModeEnum.Contains;
+                else
+                    filter.Operator = FilterModeEnum.Equal;
+            }
+            ApplyFilters();
+        }
+
 
         [ObservableProperty]
         private IEnumerable _list;
+        [ObservableProperty]
+        private ObservableCollection<object> _displayedList = new ObservableCollection<object>();
 
         [ObservableProperty]
         private object? _selectedItem;
@@ -105,6 +162,8 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         {
             ListType = "ducks";
             List = DuckVM.Ducks;
+            ActiveFilters = DuckFilters;
+            ApplyFilters();
         }
 
         [RelayCommand]
@@ -112,6 +171,8 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
         {
             ListType = "producers";
             List = ProducerVM.Producers;
+            ActiveFilters = ProducerFilters;
+            ApplyFilters();
         }
 
         [RelayCommand]
@@ -125,6 +186,8 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
             //if (producer != -1) return;
             List = ProducerVM.Producers;
             ListType = "producers";
+            ActiveFilters = ProducerFilters;
+            ResetFilters();
             SelectedItem = ProducerVM.Producers
             .FirstOrDefault(p => p.ID == producer);
 
@@ -225,6 +288,7 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
                     //ProducerVM.Producers.Remove(prodVM);
                     //_businessLogic.DeleteProducer(prodVM.ID);
                 }
+                ApplyFilters();
                 SelectedItem = null;
 
             }
@@ -421,7 +485,7 @@ namespace Strzelecki_Baranowski.DuckApp.ViewModels
 
 
 
-
+                ApplyFilters();
                 DetailsVisibility = Visibility.Visible;
                 EditVisibility = Visibility.Collapsed;
 
