@@ -1,0 +1,61 @@
+﻿@model Strzelecki_Baranowski.DuckApp.WebUI.Models.Duck
+
+@{
+    ViewData["Title"] = "Delete Duck";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <div class="card-header bg-danger text-white border-0 pt-4 px-5 text-center">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex p-3 mb-3">
+                        <span class="fs-1">🗑️</span>
+                    </div>
+                    <h2 class="fw-bold">Are you sure?</h2>
+                    <p class="mb-2 text-white-50">This action cannot be undone.</p>
+                </div>
+
+                <div class="card-body p-5 text-center">
+
+                    <h5 class="text-muted mb-4">You are about to delete:</h5>
+
+                    <div class="card border shadow-sm mx-auto mb-4" style="max-width: 300px;">
+                        <div class="bg-light p-3">
+                            <img src="/photos/@Model.PhotoFileName"
+                                 class="img-fluid"
+                                 style="max-height: 150px;"
+                                 onerror="this.src='/photos/0.png'" />
+                        </div>
+                        <div class="card-body">
+                            <h4 class="fw-bold mb-1">@Model.Name</h4>
+                            <span class="badge bg-primary rounded-pill mb-2">@Model.Category</span>
+                            <h5 class="text-success fw-bold">@Model.Price.ToString("C")</h5>
+                        </div>
+                    </div>
+
+                    <p class="text-danger fw-bold small">
+                        ⚠️ Warning: The product will be permanently removed.
+                    </p>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="ID" />
+
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a asp-action="Index" class="btn btn-light btn-lg px-4 border fw-semibold">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg px-4 fw-bold shadow-sm">
+                                Yes, Delete It
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+﻿@model IEnumerable<Strzelecki_Baranowski.DuckApp.WebUI.Models.Duck>
+
+@{
+    ViewData["Title"] = "Duck Collection";
+}
+
+<div class="container my-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold text-dark display-6">Duck Collection</h1>
+            <p class="text-muted">Manage your premium rubber ducks inventory.</p>
+        </div>
+        <a asp-action="Add" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-bold">
+            <span class="fs-5 align-middle">+</span> Add New Duck
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
+
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover-effect">
+
+                    <div class="position-relative bg-light text-center p-4" style="height: 220px;">
+
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-white text-primary shadow-sm border px-2 py-1 rounded-pill text-uppercase" style="font-size: 0.7rem;">
+                                @item.Category
+                            </span>
+                        </div>
+
+                        <a asp-action="Details" asp-route-id="@item.ID" class="d-block h-100 w-100">
+                            <img src="/photos/@item.PhotoFileName"
+                                 alt="@item.Name"
+                                 class="img-fluid h-100"
+                                 style="object-fit: contain; transition: transform 0.3s ease;"
+                                 onerror="this.src='/photos/0.png'" /> 
+                            @* <img src="/photos/@(string.IsNullOrEmpty(item.Photo) ? "0.png" : System.IO.Path.GetFileName(item.Photo))"
+                            @*      alt="@item.Name" *@
+                            @*      class="img-fluid h-100" *@
+                            @*      style="object-fit: contain; transition: transform 0.3s ease;" *@
+                            @*      onerror="this.src='/photos/0.png'" /> *@
+                        </a>
+                    </div>
+
+                    <div class="card-body p-3 d-flex flex-column">
+
+                        <h5 class="card-title fw-bold text-dark mb-1 text-truncate" title="@item.Name">
+                            <a asp-action="Details" asp-route-id="@item.ID" class="text-decoration-none text-dark stretched-link">
+                                @item.Name
+                            </a>
+                        </h5>
+
+                        <small class="text-muted mb-3">Item ID: @item.ID</small>
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+
+                            <span class="fs-4 fw-bold text-success">
+                                @item.Price.ToString("C")
+                            </span>
+
+                            <div class="btn-group" style="position: relative; z-index: 2;">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-secondary rounded-start" title="Edit">
+                                    ✏️
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger rounded-end" title="Delete">
+                                    🗑️
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-3 text-muted display-1">🦆</div>
+            <h3 class="fw-bold text-muted">No ducks found.</h3>
+            <p class="text-muted">Start by adding your first product to the database.</p>
+            <a asp-action="Add" class="btn btn-outline-primary mt-2">Add First Duck</a>
+        </div>
+    }
+</div>
+
+<style>
+    .card-hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card-hover-effect:hover {
+            transform: translateY(-8px); /* Uniesienie karty */
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important; /* Większy cień */
+        }
+
+            /* Powiększenie zdjęcia przy najechaniu */
+            .card-hover-effect:hover img {
+                transform: scale(1.05);
+            }
+</style>

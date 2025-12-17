@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Strzelecki_Baranowski.DuckApp.WebUI.Models.Producer>
+
+@{
+    ViewData["Title"] = "Producers";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold text-dark">Manufacturers</h1>
+        <a asp-action="Add" class="btn btn-success rounded-pill px-4 fw-bold">+ Add New</a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4">
+                    <div class="card-body p-4 text-center">
+
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3 mb-3">
+                            <span class="fs-1">🏭</span>
+                        </div>
+
+                        <h4 class="card-title fw-bold mb-1">@item.Name</h4>
+                        <p class="text-muted small mb-3">ID: @item.ID</p>
+
+                        @if (!string.IsNullOrEmpty(item.Website))
+                        {
+                            <a href="@item.Website" target="_blank" class="text-decoration-none text-secondary mb-3 d-block text-truncate">
+                                🔗 @item.Website
+                            </a>
+                        }
+
+                        <hr class="opacity-25 my-3">
+
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary w-100 rounded-pill fw-semibold">
+                            View Profile & Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Mały efekt uniesienia przy najechaniu myszką */
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+</style>

@@ -1,0 +1,74 @@
+﻿@model Strzelecki_Baranowski.DuckApp.WebUI.Models.Producer
+
+@{
+    ViewData["Title"] = "Delete Producer";
+    // Liczymy kaczki dla wygody
+    int ducksCount = Model.Ducks?.Count ?? 0;
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <div class="card-header bg-danger text-white border-0 pt-4 px-5 text-center">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex p-3 mb-3">
+                        <span class="fs-1">🗑️</span>
+                    </div>
+                    <h2 class="fw-bold">Delete Producer?</h2>
+                    <p class="mb-2 text-white-50">This action is permanent.</p>
+                </div>
+
+                <div class="card-body p-5 text-center">
+
+                    <h5 class="text-muted mb-4">You are about to delete:</h5>
+
+                    <div class="p-4 bg-light border rounded-3 mb-4">
+                        <h2 class="fw-bold text-dark mb-2">@Model.Name</h2>
+                        <span class="text-primary">@(string.IsNullOrEmpty(Model.Website) ? "No website" : Model.Website)</span>
+                    </div>
+
+                    @if (ducksCount > 0)
+                    {
+                        <div class="alert alert-warning border-warning d-flex align-items-start gap-3 text-start mb-4 shadow-sm">
+                            <span class="fs-1">⚠️</span>
+                            <div>
+                                <h5 class="fw-bold text-danger mb-1">CASCADING DELETE!</h5>
+                                <p class="mb-0 text-dark">
+                                    This producer currently has
+                                    <span class="badge bg-danger rounded-pill fs-6">@ducksCount products</span>
+                                    assigned.
+                                </p>
+                                <p class="mb-0 small fw-bold mt-2 text-muted">
+                                    Deleting this producer will automatically delete all these products from the database!
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success border-success bg-opacity-10 mb-4">
+                            <i class="me-2">✅</i> This producer has no products assigned. Safe to delete.
+                        </div>
+                    }
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="ID" />
+
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a asp-action="Index" class="btn btn-light btn-lg px-4 border fw-semibold">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg px-4 fw-bold shadow-sm">
+                                @(ducksCount > 0 ? "I Understand, Delete ALL" : "Confirm Delete")
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
