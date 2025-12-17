@@ -18,24 +18,228 @@ namespace Strzelecki_Baranowski.DuckApp.WebUI.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    IEnumerable<IDuck> ducksFromCore = _blc.GetAllDucks();
+        //    var model = ducksFromCore.Select(d => new Duck
+        //    {
+        //        ID = d.ID,
+        //        Name = d.Name,
+        //        Price = (decimal)d.Price, // Rzutowanie jeśli w CORE jest double
+        //        Category = (Category)d.Category, // Rzutowanie enuma
+        //        Description = d.Description,
+        //        Photo = d.Photo, // Uwaga na nazwy właściwości
+        //        ProducerID = d.ProducerID,
+        //        // Jeśli IDuck ma pole ProducerName, to super, jak nie to trzeba pobrać
+        //    }).ToList();
+
+        //    return View(model);
+        //}
+        public IActionResult Index(DuckFilterViewModel filter, bool reset = false)
         {
-            IEnumerable<IDuck> ducksFromCore = _blc.GetAllDucks();
-            var model = ducksFromCore.Select(d => new Duck
+            // KROK A: Obsługa pamięci filtrów
+            if (reset)
+            {
+                // 1. Użytkownik kliknął RESET - czyścimy sesję i filtry
+                HttpContext.Session.Remove("DuckFilterState");
+                filter = new DuckFilterViewModel();
+            }
+            else if (Request.Query.Count == 0)
+            {
+                // 2. Brak parametrów w URL (powrót z innej strony) - próbujemy odtworzyć z sesji
+                var storedFilter = HttpContext.Session.Get<DuckFilterViewModel>("DuckFilterState");
+                if (storedFilter != null)
+                {
+                    filter = storedFilter;
+                }
+            }
+            else
+            {
+                // 3. Są parametry (użytkownik kliknął Apply) - zapisujemy nowy stan do sesji
+                HttpContext.Session.Set("DuckFilterState", filter);
+            }
+
+            // KROK B: Standardowa logika filtrowania (Twoja z poprzedniego kroku)
+            IEnumerable<IDuck> query = _blc.GetAllDucks();
+
+            if (filter.ID.HasValue)
+            {
+                int val = filter.ID.Value;
+                query = filter.IDMode switch
+                {
+                    FilterMode.Equal => query.Where(d => d.ID == val),
+                    FilterMode.NotEqual => query.Where(d => d.ID != val),
+                    FilterMode.Greater => query.Where(d => d.ID > val),
+                    FilterMode.Less => query.Where(d => d.ID < val),
+                    FilterMode.GreaterOrEqual => query.Where(d => d.ID >= val),
+                    FilterMode.LessOrEqual => query.Where(d => d.ID <= val),
+                    _ => query
+                };
+            }
+
+            // 2. Filtr Price (Number)
+            if (filter.Price.HasValue)
+            {
+                double val = (double)filter.Price.Value;
+                query = filter.PriceMode switch
+                {
+                    FilterMode.Equal => query.Where(d => d.Price == val),
+                    FilterMode.NotEqual => query.Where(d => d.Price != val),
+                    FilterMode.Greater => query.Where(d => d.Price > val),
+                    FilterMode.Less => query.Where(d => d.Price < val),
+                    FilterMode.GreaterOrEqual => query.Where(d => d.Price >= val),
+                    FilterMode.LessOrEqual => query.Where(d => d.Price <= val),
+                    _ => query
+                };
+            }
+
+            // 3. Filtr Name (Text)
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query = filter.NameMode switch
+                {
+                    FilterMode.Contains => query.Where(d => d.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.NotContains => query.Where(d => !d.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.Equal => query.Where(d => d.Name.Equals(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.NotEqual => query.Where(d => !d.Name.Equals(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    _ => query
+                };
+            }
+
+            // 4. Filtr Description (Text)
+            if (!string.IsNullOrEmpty(filter.Description))
+            {
+                // Uwaga: Description może być null w bazie, więc używamy ?.
+                query = filter.DescriptionMode switch
+                {
+                    FilterMode.Contains => query.Where(d => d.Description?.Contains(filter.Description, StringComparison.OrdinalIgnoreCase) ?? false),
+                    FilterMode.NotContains => query.Where(d => !(d.Description?.Contains(filter.Description, StringComparison.OrdinalIgnoreCase) ?? false)),
+                    FilterMode.Equal => query.Where(d => (d.Description ?? "").Equals(filter.Description, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.NotEqual => query.Where(d => !(d.Description ?? "").Equals(filter.Description, StringComparison.OrdinalIgnoreCase)),
+                    _ => query
+                };
+            }
+
+            // 5. Category & Producer
+            if (filter.Category.HasValue)
+                query = query.Where(d => (Category)d.Category == filter.Category.Value);
+
+            if (filter.ProducerID.HasValue)
+                query = query.Where(d => d.ProducerID == filter.ProducerID.Value);
+
+
+            // KROK C: Budowanie modelu
+            var duckModels = query.Select(d => new Duck
             {
                 ID = d.ID,
                 Name = d.Name,
-                Price = (decimal)d.Price, // Rzutowanie jeśli w CORE jest double
-                Category = (Category)d.Category, // Rzutowanie enuma
+                Price = (decimal)d.Price,
+                Category = (Category)d.Category,
                 Description = d.Description,
-                Photo = d.Photo, // Uwaga na nazwy właściwości
-                ProducerID = d.ProducerID,
-                // Jeśli IDuck ma pole ProducerName, to super, jak nie to trzeba pobrać
+                Photo = d.Photo,
+                ProducerID = d.ProducerID
             }).ToList();
 
-            return View(model);
-        }
+            var viewModel = new DuckIndexViewModel
+            {
+                Ducks = duckModels,
+                Filter = filter, // Przekazujemy (potencjalnie odtworzony) filtr do widoku
+                ProducersList = new SelectList(_blc.GetAllProducers(), "ID", "Name", filter.ProducerID)
+            };
 
+            return View(viewModel);
+        }
+        //public IActionResult Index(DuckFilterViewModel filter)
+        //{
+        //    IEnumerable<IDuck> query = _blc.GetAllDucks();
+
+        //    // 1. Filtr ID (Number)
+        //    if (filter.ID.HasValue)
+        //    {
+        //        int val = filter.ID.Value;
+        //        query = filter.IDMode switch
+        //        {
+        //            FilterMode.Equal => query.Where(d => d.ID == val),
+        //            FilterMode.NotEqual => query.Where(d => d.ID != val),
+        //            FilterMode.Greater => query.Where(d => d.ID > val),
+        //            FilterMode.Less => query.Where(d => d.ID < val),
+        //            FilterMode.GreaterOrEqual => query.Where(d => d.ID >= val),
+        //            FilterMode.LessOrEqual => query.Where(d => d.ID <= val),
+        //            _ => query
+        //        };
+        //    }
+
+        //    // 2. Filtr Price (Number)
+        //    if (filter.Price.HasValue)
+        //    {
+        //        double val = (double)filter.Price.Value;
+        //        query = filter.PriceMode switch
+        //        {
+        //            FilterMode.Equal => query.Where(d => d.Price == val),
+        //            FilterMode.NotEqual => query.Where(d => d.Price != val),
+        //            FilterMode.Greater => query.Where(d => d.Price > val),
+        //            FilterMode.Less => query.Where(d => d.Price < val),
+        //            FilterMode.GreaterOrEqual => query.Where(d => d.Price >= val),
+        //            FilterMode.LessOrEqual => query.Where(d => d.Price <= val),
+        //            _ => query
+        //        };
+        //    }
+
+        //    // 3. Filtr Name (Text)
+        //    if (!string.IsNullOrEmpty(filter.Name))
+        //    {
+        //        query = filter.NameMode switch
+        //        {
+        //            FilterMode.Contains => query.Where(d => d.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)),
+        //            FilterMode.NotContains => query.Where(d => !d.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)),
+        //            FilterMode.Equal => query.Where(d => d.Name.Equals(filter.Name, StringComparison.OrdinalIgnoreCase)),
+        //            FilterMode.NotEqual => query.Where(d => !d.Name.Equals(filter.Name, StringComparison.OrdinalIgnoreCase)),
+        //            _ => query
+        //        };
+        //    }
+
+        //    // 4. Filtr Description (Text)
+        //    if (!string.IsNullOrEmpty(filter.Description))
+        //    {
+        //        // Uwaga: Description może być null w bazie, więc używamy ?.
+        //        query = filter.DescriptionMode switch
+        //        {
+        //            FilterMode.Contains => query.Where(d => d.Description?.Contains(filter.Description, StringComparison.OrdinalIgnoreCase) ?? false),
+        //            FilterMode.NotContains => query.Where(d => !(d.Description?.Contains(filter.Description, StringComparison.OrdinalIgnoreCase) ?? false)),
+        //            FilterMode.Equal => query.Where(d => (d.Description ?? "").Equals(filter.Description, StringComparison.OrdinalIgnoreCase)),
+        //            FilterMode.NotEqual => query.Where(d => !(d.Description ?? "").Equals(filter.Description, StringComparison.OrdinalIgnoreCase)),
+        //            _ => query
+        //        };
+        //    }
+
+        //    // 5. Category & Producer
+        //    if (filter.Category.HasValue)
+        //        query = query.Where(d => (Category)d.Category == filter.Category.Value);
+
+        //    if (filter.ProducerID.HasValue)
+        //        query = query.Where(d => d.ProducerID == filter.ProducerID.Value);
+
+        //    // Mapowanie na Model MVC (zachowując logikę zdjęć)
+        //    var duckModels = query.Select(d => new Duck
+        //    {
+        //        ID = d.ID,
+        //        Name = d.Name,
+        //        Price = (decimal)d.Price,
+        //        Category = (Category)d.Category,
+        //        Description = d.Description,
+        //        Photo = d.Photo,
+        //        ProducerID = d.ProducerID
+        //    }).ToList();
+
+        //    var viewModel = new DuckIndexViewModel
+        //    {
+        //        Ducks = duckModels,
+        //        Filter = filter,
+        //        ProducersList = new SelectList(_blc.GetAllProducers(), "ID", "Name", filter.ProducerID)
+        //    };
+
+        //    return View(viewModel);
+        //}
 
         // GET: Ducks/Details/5
         public IActionResult Details(int id)

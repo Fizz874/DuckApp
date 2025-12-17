@@ -1,31 +1,165 @@
-﻿@model IEnumerable<Strzelecki_Baranowski.DuckApp.WebUI.Models.Duck>
+﻿@using Strzelecki_Baranowski.DuckApp.WebUI.Models
+@using Strzelecki_Baranowski.DuckApp.CORE
+@model DuckIndexViewModel
 
 @{
-    ViewData["Title"] = "Duck Collection";
+    ViewData["Title"] = "Ducks";
+
+    // --- LOGIKA UI (ODPOWIEDNIK TWOICH KONWERTERÓW WPF) ---
+
+    // Konwerter Mode -> Icon
+    string GetIcon(FilterMode mode) => mode switch
+    {
+        FilterMode.Equal => "=",
+        FilterMode.NotEqual => "≠",
+        FilterMode.Greater => ">",
+        FilterMode.Less => "<",
+        FilterMode.GreaterOrEqual => "≥",
+        FilterMode.LessOrEqual => "≤",
+        FilterMode.Contains => "⊆",
+        FilterMode.NotContains => "⊈",
+        _ => "?"
+    };
+
+    // Konwerter Mode -> Color (CSS Style)
+    string GetColorStyle(FilterMode mode) => mode switch
+    {
+        FilterMode.Equal => "color: green; font-weight: 900;",
+        FilterMode.NotEqual => "color: red; font-weight: 900;",
+        FilterMode.Greater => "color: steelblue; font-weight: 900;",
+        FilterMode.GreaterOrEqual => "color: steelblue; font-weight: 900;",
+        FilterMode.Less => "color: darkorange; font-weight: 900;",
+        FilterMode.LessOrEqual => "color: darkorange; font-weight: 900;",
+        FilterMode.Contains => "color: green; font-weight: 900;",
+        FilterMode.NotContains => "color: red; font-weight: 900;",
+        _ => "color: black;"
+    };
+
+    // Listy dostępnych trybów dla pętli
+    var textModes = new[] { FilterMode.Contains, FilterMode.NotContains, FilterMode.Equal, FilterMode.NotEqual };
+    var numberModes = new[] { FilterMode.Equal, FilterMode.NotEqual, FilterMode.Greater, FilterMode.Less, FilterMode.GreaterOrEqual, FilterMode.LessOrEqual };
 }
 
 <div class="container my-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="fw-bold text-dark display-6">Duck Collection</h1>
+            <h1 class="fw-bold text-dark display-6">Ducks</h1>
             <p class="text-muted">Manage your premium rubber ducks inventory.</p>
         </div>
-        <a asp-action="Add" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-bold">
-            <span class="fs-5 align-middle">+</span> Add New Duck
-        </a>
+
+        <div class="d-flex gap-2">
+            <a asp-controller="Producers" asp-action="Index" class="btn btn-outline-dark btn-lg rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2">
+                🏭 Producers
+            </a>
+
+            <a asp-action="Add" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2">
+                <span class="fs-4 lh-1" style="margin-top: -2px;">+</span> <span>Add New Duck</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="accordion shadow-sm mb-5" id="filterAccordion">
+        <div class="accordion-item border-0 rounded-3 overflow-hidden">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed fw-bold bg-white text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter">
+                    🔍 Filters
+                </button>
+            </h2>
+            <div id="collapseFilter" class="accordion-collapse collapse collapse" data-bs-parent="#filterAccordion">
+                <div class="accordion-body bg-light">
+
+                    <form asp-action="Index" method="get">
+                        <div class="row g-3">
+
+                            <div class="col-md-4 col-lg-3">
+                                <label class="form-label small text-muted fw-bold mb-1">ID</label>
+                                <div class="input-group">
+                                    <select name="Filter.IDMode" class="form-select bg-white text-center" style="max-width: 60px; font-size: 1.2rem; @GetColorStyle(Model.Filter.IDMode)">
+                                        @foreach (var m in numberModes)
+                                        {
+                                            <option value="@m" selected="@(Model.Filter.IDMode == m)" style="@GetColorStyle(m)">@GetIcon(m)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="Filter.ID" class="form-control" placeholder="ID..." type="number" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-3">
+                                <label class="form-label small text-muted fw-bold mb-1">Price</label>
+                                <div class="input-group">
+                                    <select name="Filter.PriceMode" class="form-select bg-white text-center" style="max-width: 60px; font-size: 1.2rem; @GetColorStyle(Model.Filter.PriceMode)">
+                                        @foreach (var m in numberModes)
+                                        {
+                                            <option value="@m" selected="@(Model.Filter.PriceMode == m)" style="@GetColorStyle(m)">@GetIcon(m)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="Filter.Price" class="form-control" placeholder="0.00" type="number" step="0.01" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-6">
+                                <label class="form-label small text-muted fw-bold mb-1">Name</label>
+                                <div class="input-group">
+                                    <select name="Filter.NameMode" class="form-select bg-white text-center" style="max-width: 60px; font-size: 1.2rem; @GetColorStyle(Model.Filter.NameMode)">
+                                        @foreach (var m in textModes)
+                                        {
+                                            <option value="@m" selected="@(Model.Filter.NameMode == m)" style="@GetColorStyle(m)">@GetIcon(m)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="Filter.Name" class="form-control" placeholder="Duck name..." />
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-6">
+                                <label class="form-label small text-muted fw-bold mb-1">Description</label>
+                                <div class="input-group">
+                                    <select name="Filter.DescriptionMode" class="form-select bg-white text-center" style="max-width: 60px; font-size: 1.2rem; @GetColorStyle(Model.Filter.DescriptionMode)">
+                                        @foreach (var m in textModes)
+                                        {
+                                            <option value="@m" selected="@(Model.Filter.DescriptionMode == m)" style="@GetColorStyle(m)">@GetIcon(m)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="Filter.Description" class="form-control" placeholder="Description content..." />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-lg-3">
+                                <label class="form-label small text-muted fw-bold mb-1">Producer</label>
+                                <select asp-for="Filter.ProducerID" asp-items="Model.ProducersList" class="form-select">
+                                    <option value="">-- All Producers --</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3 col-lg-3">
+                                <label class="form-label small text-muted fw-bold mb-1">Category</label>
+                                <select asp-for="Filter.Category" asp-items="Html.GetEnumSelectList<Strzelecki_Baranowski.DuckApp.CORE.Category>()" class="form-select">
+                                    <option value="">-- All Categories --</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4 gap-2">
+                            <a asp-action="Index" asp-route-reset="true" class="btn btn-light border text-muted fw-bold px-4">Reset</a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">Apply Filters</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
-
-        @foreach (var item in Model)
+        @foreach (var item in Model.Ducks)
         {
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover-effect">
 
                     <div class="position-relative bg-light text-center p-4" style="height: 220px;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-3" style="z-index: 2;">
                             <span class="badge bg-white text-primary shadow-sm border px-2 py-1 rounded-pill text-uppercase" style="font-size: 0.7rem;">
                                 @item.Category
                             </span>
@@ -36,12 +170,7 @@
                                  alt="@item.Name"
                                  class="img-fluid h-100"
                                  style="object-fit: contain; transition: transform 0.3s ease;"
-                                 onerror="this.src='/photos/0.png'" /> 
-                            @* <img src="/photos/@(string.IsNullOrEmpty(item.Photo) ? "0.png" : System.IO.Path.GetFileName(item.Photo))"
-                            @*      alt="@item.Name" *@
-                            @*      class="img-fluid h-100" *@
-                            @*      style="object-fit: contain; transition: transform 0.3s ease;" *@
-                            @*      onerror="this.src='/photos/0.png'" /> *@
+                                 onerror="this.src='/photos/0.png'" />
                         </a>
                     </div>
 
@@ -58,14 +187,21 @@
                         <div class="mt-auto d-flex justify-content-between align-items-center">
 
                             <span class="fs-4 fw-bold text-success">
-                                @item.Price.ToString("C")
+                                @item.Price.ToString("C", new System.Globalization.CultureInfo("fr-FR"))
                             </span>
 
-                            <div class="btn-group" style="position: relative; z-index: 2;">
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-secondary rounded-start" title="Edit">
+                            <div class="btn-group shadow-sm" style="position: relative; z-index: 2;">
+
+                                <a asp-action="Edit" asp-route-id="@item.ID"
+                                   class="btn btn-outline-warning text-dark fw-bold btn-sm d-flex align-items-center justify-content-center"
+                                   title="Edit"
+                                   style="border-color: #ffc107;">
                                     ✏️
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-danger rounded-end" title="Delete">
+
+                                <a asp-action="Delete" asp-route-id="@item.ID"
+                                   class="btn btn-outline-danger fw-bold btn-sm d-flex align-items-center justify-content-center"
+                                   title="Delete">
                                     🗑️
                                 </a>
                             </div>
@@ -76,15 +212,15 @@
         }
     </div>
 
-    @if (!Model.Any())
+    @if (!Model.Ducks.Any())
     {
         <div class="text-center py-5">
             <div class="mb-3 text-muted display-1">🦆</div>
-            <h3 class="fw-bold text-muted">No ducks found.</h3>
-            <p class="text-muted">Start by adding your first product to the database.</p>
-            <a asp-action="Add" class="btn btn-outline-primary mt-2">Add First Duck</a>
+            <h3 class="fw-bold text-muted">No ducks found matching criteria.</h3>
+            <a asp-action="Index" class="btn btn-outline-primary mt-2">Clear Filters</a>
         </div>
     }
+
 </div>
 
 <style>
@@ -93,12 +229,16 @@
     }
 
         .card-hover-effect:hover {
-            transform: translateY(-8px); /* Uniesienie karty */
-            box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important; /* Większy cień */
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
         }
 
-            /* Powiększenie zdjęcia przy najechaniu */
             .card-hover-effect:hover img {
                 transform: scale(1.05);
             }
+
+    /* Trick na ostylowanie selecta po wybraniu opcji (działa w części przeglądarek) */
+    select option {
+        font-weight: bold;
+    }
 </style>
