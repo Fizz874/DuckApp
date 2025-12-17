@@ -22,6 +22,14 @@ namespace Strzelecki_Baranowski.DuckApp.WebUI
                 return new BLC(dllPath, className);
             });
 
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Czas trwania pamiêci
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -39,9 +47,11 @@ namespace Strzelecki_Baranowski.DuckApp.WebUI
 
             app.MapStaticAssets();
 
+            app.UseSession();
+
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Ducks}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
 

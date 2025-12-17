@@ -2,6 +2,9 @@
 using Strzelecki_Baranowski.DuckApp.WebUI.Models;
 using Strzelecki_Baranowski.DuckApp.BL; 
 using System.Linq;
+using Strzelecki_Baranowski.DuckApp.CORE;
+using Strzelecki_Baranowski.DuckApp.INTERFACES;
+using Strzelecki_Baranowski.DuckApp.WebUI;
 
 namespace Strzelecki_Baranowski.DuckApp.Web.Controllers
 {
@@ -15,20 +18,89 @@ namespace Strzelecki_Baranowski.DuckApp.Web.Controllers
         }
 
         // GET: Producers (Lista kafelków)
-        public IActionResult Index()
+        public IActionResult Index(ProducerFilterViewModel filter, bool reset = false)
         {
-            var coreProducers = _blc.GetAllProducers();
+            // --- 1. OBSŁUGA SESJI (PAMIĘĆ FILTRÓW) ---
+            if (reset)
+            {
+                HttpContext.Session.Remove("ProducerFilterState");
+                filter = new ProducerFilterViewModel();
+            }
+            else if (Request.Query.Count == 0)
+            {
+                var storedFilter = HttpContext.Session.Get<ProducerFilterViewModel>("ProducerFilterState");
+                if (storedFilter != null) filter = storedFilter;
+            }
+            else
+            {
+                HttpContext.Session.Set("ProducerFilterState", filter);
+            }
 
-            // Mapowanie: IProducer -> Producer (MVC)
-            var model = coreProducers.Select(p => new Producer
+            // --- 2. POBRANIE DANYCH ---
+            IEnumerable<IProducer> query = _blc.GetAllProducers();
+
+            // --- 3. LOGIKA FILTROWANIA ---
+
+            // Filtr ID
+            if (filter.ID.HasValue)
+            {
+                int val = filter.ID.Value;
+                query = filter.IDMode switch
+                {
+                    FilterMode.Equal => query.Where(p => p.ID == val),
+                    FilterMode.NotEqual => query.Where(p => p.ID != val),
+                    FilterMode.Greater => query.Where(p => p.ID > val),
+                    FilterMode.Less => query.Where(p => p.ID < val),
+                    FilterMode.GreaterOrEqual => query.Where(p => p.ID >= val),
+                    FilterMode.LessOrEqual => query.Where(p => p.ID <= val),
+                    _ => query
+                };
+            }
+
+            // Filtr Name
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query = filter.NameMode switch
+                {
+                    FilterMode.Contains => query.Where(p => p.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.NotContains => query.Where(p => !p.Name.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.Equal => query.Where(p => p.Name.Equals(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.NotEqual => query.Where(p => !p.Name.Equals(filter.Name, StringComparison.OrdinalIgnoreCase)),
+                    _ => query
+                };
+            }
+
+            // Filtr Website
+            if (!string.IsNullOrEmpty(filter.Website))
+            {
+                // Website może być null, więc używamy bezpiecznego dostępu
+                query = filter.WebsiteMode switch
+                {
+                    FilterMode.Contains => query.Where(p => (p.Website ?? "").Contains(filter.Website, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.NotContains => query.Where(p => !(p.Website ?? "").Contains(filter.Website, StringComparison.OrdinalIgnoreCase)),
+                    FilterMode.Equal => query.Where(p => (p.Website ?? "").Equals(filter.Website, StringComparison.OrdinalIgnoreCase)),
+                    _ => query
+                };
+            }
+
+            // --- 4. MAPOWANIE NA MODEL WIDOKU ---
+            var producerModels = query.Select(p => new Producer
             {
                 ID = p.ID,
                 Name = p.Name,
                 Website = p.Website
             }).ToList();
 
-            return View(model);
+            var viewModel = new ProducerIndexViewModel
+            {
+                Producers = producerModels,
+                Filter = filter
+            };
+
+            return View(viewModel);
         }
+
+        //
 
         // GET: Producers/Details/5
         public IActionResult Details(int id)

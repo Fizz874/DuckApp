@@ -1,56 +1,207 @@
-﻿@model IEnumerable<Strzelecki_Baranowski.DuckApp.WebUI.Models.Producer>
+﻿@using Strzelecki_Baranowski.DuckApp.WebUI.Models
+@using Strzelecki_Baranowski.DuckApp.CORE
+@model ProducerIndexViewModel
 
 @{
     ViewData["Title"] = "Producers";
+
+    // --- LOGIKA UI (HELPERY) ---
+    string GetIcon(FilterMode mode) => mode switch
+    {
+        FilterMode.Equal => "=",
+        FilterMode.NotEqual => "≠",
+        FilterMode.Greater => ">",
+        FilterMode.Less => "<",
+        FilterMode.GreaterOrEqual => "≥",
+        FilterMode.LessOrEqual => "≤",
+        FilterMode.Contains => "⊆",
+        FilterMode.NotContains => "⊈",
+        _ => "?"
+    };
+
+    string GetColorStyle(FilterMode mode) => mode switch
+    {
+        FilterMode.Equal => "color: green; font-weight: 900;",
+        FilterMode.NotEqual => "color: red; font-weight: 900;",
+        FilterMode.Greater => "color: steelblue; font-weight: 900;",
+        FilterMode.GreaterOrEqual => "color: steelblue; font-weight: 900;",
+        FilterMode.Less => "color: darkorange; font-weight: 900;",
+        FilterMode.LessOrEqual => "color: darkorange; font-weight: 900;",
+        FilterMode.Contains => "color: green; font-weight: 900;",
+        FilterMode.NotContains => "color: red; font-weight: 900;",
+        _ => "color: black;"
+    };
+
+    var textModes = new[] { FilterMode.Contains, FilterMode.NotContains, FilterMode.Equal, FilterMode.NotEqual };
+    var numberModes = new[] { FilterMode.Equal, FilterMode.NotEqual, FilterMode.Greater, FilterMode.Less, FilterMode.GreaterOrEqual, FilterMode.LessOrEqual };
 }
 
 <div class="container my-5">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold text-dark">Manufacturers</h1>
-        <a asp-action="Add" class="btn btn-success rounded-pill px-4 fw-bold">+ Add New</a>
+        <div>
+            <h1 class="fw-bold text-dark display-6">Producers</h1>
+            <p class="text-muted">Manage your duck suppliers and factories.</p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a asp-controller="Ducks" asp-action="Index" class="btn btn-outline-dark btn-lg rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2">
+                🦆 Ducks
+            </a>
+
+            <a asp-action="Add" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2">
+                <span class="fs-4 lh-1" style="margin-top: -2px;">+</span> <span>Add Producer</span>
+            </a>
+        </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var item in Model)
-        {
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm hover-shadow transition-all rounded-4">
-                    <div class="card-body p-4 text-center">
+    <div class="accordion shadow-sm mb-5" id="filterAccordion">
+        <div class="accordion-item border-0 rounded-3 overflow-hidden">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed fw-bold bg-white text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter">
+                    🔍 Filters
+                </button>
+            </h2>
+            <div id="collapseFilter" class="accordion-collapse collapse collapse" data-bs-parent="#filterAccordion">
+                <div class="accordion-body bg-light">
 
-                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex p-3 mb-3">
-                            <span class="fs-1">🏭</span>
+                    <form asp-action="Index" method="get">
+                        <div class="row g-3">
+
+                            <div class="col-md-4 col-lg-2">
+                                <label class="form-label small text-muted fw-bold mb-1">ID</label>
+                                <div class="input-group">
+                                    <select name="Filter.IDMode" class="form-select bg-white text-center" style="max-width: 60px; font-size: 1.2rem; @GetColorStyle(Model.Filter.IDMode)">
+                                        @foreach (var m in numberModes)
+                                        {
+                                            <option value="@m" selected="@(Model.Filter.IDMode == m)" style="@GetColorStyle(m)">@GetIcon(m)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="Filter.ID" class="form-control" placeholder="ID..." type="number" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-5">
+                                <label class="form-label small text-muted fw-bold mb-1">Producer Name</label>
+                                <div class="input-group">
+                                    <select name="Filter.NameMode" class="form-select bg-white text-center" style="max-width: 60px; font-size: 1.2rem; @GetColorStyle(Model.Filter.NameMode)">
+                                        @foreach (var m in textModes)
+                                        {
+                                            <option value="@m" selected="@(Model.Filter.NameMode == m)" style="@GetColorStyle(m)">@GetIcon(m)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="Filter.Name" class="form-control" placeholder="Company name..." />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-lg-5">
+                                <label class="form-label small text-muted fw-bold mb-1">Website</label>
+                                <div class="input-group">
+                                    <select name="Filter.WebsiteMode" class="form-select bg-white text-center" style="max-width: 60px; font-size: 1.2rem; @GetColorStyle(Model.Filter.WebsiteMode)">
+                                        @foreach (var m in textModes)
+                                        {
+                                            <option value="@m" selected="@(Model.Filter.WebsiteMode == m)" style="@GetColorStyle(m)">@GetIcon(m)</option>
+                                        }
+                                    </select>
+                                    <input asp-for="Filter.Website" class="form-control" placeholder="example.com..." />
+                                </div>
+                            </div>
+
                         </div>
 
-                        <h4 class="card-title fw-bold mb-1">@item.Name</h4>
-                        <p class="text-muted small mb-3">ID: @item.ID</p>
+                        <div class="d-flex justify-content-end mt-4 gap-2">
+                            <a asp-action="Index" asp-route-reset="true" class="btn btn-light border text-muted fw-bold px-4">Reset</a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">Apply Filters</button>
+                        </div>
+                    </form>
 
-                        @if (!string.IsNullOrEmpty(item.Website))
-                        {
-                            <a href="@item.Website" target="_blank" class="text-decoration-none text-secondary mb-3 d-block text-truncate">
-                                🔗 @item.Website
-                            </a>
-                        }
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <hr class="opacity-25 my-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
+        @foreach (var item in Model.Producers)
+        {
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover-effect">
 
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-outline-primary w-100 rounded-pill fw-semibold">
-                            View Profile & Products
-                        </a>
+                    <div class="position-relative bg-light text-center p-4 d-flex align-items-center justify-content-center" style="height: 180px;">
+
+                        <div class="text-secondary opacity-5">
+                            <span style="font-size: 5rem;">🏭</span>
+                        </div>
+
+                        <a asp-action="Details" asp-route-id="@item.ID" class="stretched-link"></a>
+                    </div>
+
+                    <div class="card-body p-3 d-flex flex-column">
+
+                        <h5 class="card-title fw-bold text-dark mb-1 text-truncate" title="@item.Name">
+                            @item.Name
+                        </h5>
+
+                        <div class="mb-3 text-truncate">
+                            @if (!string.IsNullOrEmpty(item.Website))
+                            {
+                                <a href="@item.Website" target="_blank" class="text-decoration-none small text-primary" style="position: relative; z-index: 2;">
+                                    🌐 @item.Website
+                                </a>
+                            }
+                            else
+                            {
+                                <small class="text-muted">No website provided</small>
+                            }
+                        </div>
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top">
+
+                            <small class="text-muted fw-bold">ID: @item.ID</small>
+
+                            <div class="btn-group shadow-sm" style="position: relative; z-index: 2;">
+
+                                <a asp-action="Edit" asp-route-id="@item.ID"
+                                   class="btn btn-outline-warning text-dark fw-bold btn-sm d-flex align-items-center justify-content-center"
+                                   title="Edit"
+                                   style="border-color: #ffc107;">
+                                    ✏️
+                                </a>
+
+                                <a asp-action="Delete" asp-route-id="@item.ID"
+                                   class="btn btn-outline-danger fw-bold btn-sm d-flex align-items-center justify-content-center"
+                                   title="Delete">
+                                    🗑️
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         }
     </div>
+
+    @if (!Model.Producers.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-3 text-muted display-1">🏭</div>
+            <h3 class="fw-bold text-muted">No producers found.</h3>
+            <a asp-action="Index" asp-route-reset="true" class="btn btn-outline-primary mt-2">Clear Filters</a>
+        </div>
+    }
+
 </div>
 
 <style>
-    /* Mały efekt uniesienia przy najechaniu myszką */
-    .hover-shadow:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    .card-hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .transition-all {
-        transition: all 0.3s ease;
+        .card-hover-effect:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
+        }
+
+    select option {
+        font-weight: bold;
     }
 </style>
