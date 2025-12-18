@@ -1,46 +1,22 @@
-﻿using Strzelecki_Baranowski.DuckApp.CORE;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Strzelecki_Baranowski.DuckApp.CORE;
 
 namespace Strzelecki_Baranowski.DuckApp.UI
 {
-
     public class FilterControl : Control
     {
         static FilterControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(FilterControl), new FrameworkPropertyMetadata(typeof(FilterControl)));
         }
-        //public enum FilterModeEnum
-        //{
-        //    Equal,
-        //    Greater,
-        //    Less,
-        //    NotEqual,
-        //    GreaterOrEqual,
-        //    LessOrEqual,
-        //    Contains,
-        //    NotContains
-        //}
 
-        //public enum FilterTypeEnum
-        //{
-        //    Text,
-        //    Number
-        //}
+        public FilterControl()
+        {
+            SetValue(AvailableModesKey, new ObservableCollection<FilterMode>());
+            UpdateAvailableModes();
+        }
 
         public FilterMode FilterMode
         {
@@ -88,18 +64,9 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             nameof(AvailableModes),
             typeof(ObservableCollection<FilterMode>),
             typeof(FilterControl),
-            new PropertyMetadata(new ObservableCollection<FilterMode>()));
+            new PropertyMetadata(null));
 
         public static readonly DependencyProperty AvailableModesProperty = AvailableModesKey.DependencyProperty;
-
-
-
-
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-            UpdateAvailableModes();
-        }
 
         private static void OnFilterTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -132,7 +99,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 
             AvailableModes = newModes;
 
-            if (!AvailableModes.Contains(FilterMode))
+            if (AvailableModes.Count > 0 && !AvailableModes.Contains(FilterMode))
             {
                 FilterMode = AvailableModes[0];
             }

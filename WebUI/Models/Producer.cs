@@ -6,16 +6,15 @@ namespace Strzelecki_Baranowski.DuckApp.WebUI.Models
     {
         public int ID { get; set; }
 
-        [Display(Name = "Nazwa Firmy")]
-        [Required(ErrorMessage = "Nazwa firmy jest wymagana.")]
-        [StringLength(100, MinimumLength = 1, ErrorMessage = "Nazwa musi mieć od 2 do 100 znaków.")]
-        public string Name { get; set; } = String.Empty;
+        [Display(Name = "Producer Name")]
+        [Required(ErrorMessage = "Producer name is required.")]
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Name must be between 1 and 100 characters.")]
+        public string Name { get; set; } = string.Empty;
 
-        [Display(Name = "Strona WWW")]
-        [Url(ErrorMessage = "Podaj poprawny adres URL (np. https://example.com)")]
+        [Display(Name = "Website")]
+        [Url(ErrorMessage = "Please enter a valid URL (e.g., https://example.com).")]
         public string? Website { get; set; }
 
-        // Ta lista posłuży tylko do wyświetlania w Details
         public List<Duck> Ducks { get; set; } = new List<Duck>();
     }
 }

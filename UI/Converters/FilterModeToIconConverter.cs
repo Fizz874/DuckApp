@@ -1,11 +1,5 @@
 ﻿using Strzelecki_Baranowski.DuckApp.CORE;
-using Strzelecki_Baranowski.DuckApp.UI;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace Strzelecki_Baranowski.DuckApp.UI
@@ -24,7 +18,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
                     FilterMode.Less => "<",
                     FilterMode.GreaterOrEqual => "≥",
                     FilterMode.LessOrEqual => "≤",
-                    FilterMode.Contains => "⊆", // Ikona "zawiera tekst"
+                    FilterMode.Contains => "⊆",
                     FilterMode.NotContains => "⊈",
                     _ => "?"
                 };

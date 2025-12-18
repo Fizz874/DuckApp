@@ -5,7 +5,6 @@
 @{
     ViewData["Title"] = "Producers";
 
-    // --- LOGIKA UI (HELPERY) ---
     string GetIcon(FilterMode mode) => mode switch
     {
         FilterMode.Equal => "=",
@@ -196,10 +195,10 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-        .card-hover-effect:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
-        }
+    .card-hover-effect:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important;
+    }
 
     select option {
         font-weight: bold;

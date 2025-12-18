@@ -21,13 +21,14 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         public bool IsMatch(object item)
         {
             if (string.IsNullOrEmpty(Value)) return true;
+            if (string.IsNullOrEmpty(PropertyName)) return true;
 
             var prop = item.GetType().GetProperty(PropertyName);
             var itemValue = prop?.GetValue(item)?.ToString();
 
             if (itemValue == null) return false;
 
-            if (Type==FilterType.Text)
+            if (Type == FilterType.Text)
             {
                 switch (Operator)
                 {
@@ -50,14 +51,14 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 
                 if (!double.TryParse(Value, out var filterNumber))
 
-                    switch(Operator)
-                {
-                    case FilterMode.Equal:
-                        return false;
-                    case FilterMode.NotEqual:
-                        return true;
-                    default:
-                        return false;
+                    switch (Operator)
+                    {
+                        case FilterMode.Equal:
+                            return false;
+                        case FilterMode.NotEqual:
+                            return true;
+                        default:
+                            return false;
                     }
 
 
@@ -88,3 +89,4 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         }
     }
 }
+

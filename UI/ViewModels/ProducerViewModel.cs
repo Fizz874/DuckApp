@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Navigation;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
@@ -22,11 +13,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
 
         public ProducerViewModel(IProducer producer)
         {
-            _producer = producer ;
-            //_name = _producer?.Name ?? string.Empty;
-            //_iD = _producer?.ID ?? -1;
-            //_website = _producer?.Website ?? string.Empty;
-
+            _producer = producer;
         }
 
         public ProducerViewModel Clone(IProducer newModel)
@@ -37,8 +24,6 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             var clonedVM = new ProducerViewModel(newModel);
 
             return clonedVM;
-
-            //return (ProducerViewModel)this.MemberwiseClone();
         }
 
         public IProducer GetProd()
@@ -53,14 +38,6 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             this.Website = source.Website;
             this.ID = source.ID;
 
-            //OnPropertyChanged(nameof(Name));
-            //OnPropertyChanged(nameof(Website));
-            //OnPropertyChanged(nameof(ID));
-            //if (_producer != null)
-            //{
-            //    _producer.Name = source.Name;
-            //    _producer.Website = source.Website;
-            //}
         }
 
 
@@ -122,7 +99,6 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         {
             if (!string.IsNullOrEmpty(url))
             {
-                // Logika otwierania przeglądarki przeniesiona do ViewModelu
                 Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
         }
@@ -132,16 +108,6 @@ namespace Strzelecki_Baranowski.DuckApp.UI
         {
             this.ValidateAllProperties();
         }
-
-        //[ObservableProperty]
-        //private string _name;
-
-        //[ObservableProperty]
-        //private int _iD;
-
-        //[ObservableProperty]
-        //public string _website;
-
 
     }
 }
