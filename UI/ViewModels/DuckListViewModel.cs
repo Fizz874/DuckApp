@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using CommunityToolkit.Mvvm.Input;
+﻿using System.Collections.ObjectModel;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.UI
@@ -26,11 +17,5 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             }
         }
 
-
-
-
-
-
     }
-
-    }
+ }

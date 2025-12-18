@@ -15,7 +15,7 @@ namespace Strzelecki_Baranowski.DuckApp.UI
             remove { CommandManager.RequerySuggested -= value; }
         }
         private readonly Action<object> execute;
-        private readonly Predicate<object> canExecute;
+        private readonly Predicate<object?> canExecute;
         public bool CanExecute(object? parameter)
         {
             return canExecute == null ? true : canExecute(parameter);

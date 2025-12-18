@@ -1,21 +1,14 @@
 ﻿
 using System.Reflection;
-using Strzelecki_Baranowski.DuckApp.CORE;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.BL
 {
     public class BLC
     {
-
         private readonly IDataAccessObject _dao;
 
-
         public BLC(string? configPath, string? type) {
-            //Assembly DAO = Assembly.UnsafeLoadFrom(config_path);
-            //Type ti = DAO.GetType(type);
-            //var o = Activator.CreateInstance(ti, new object[] { "" });
-
             if (string.IsNullOrWhiteSpace(configPath))
                 throw new ArgumentNullException(nameof(configPath), "Assembly path cannot be empty.");
 
@@ -23,9 +16,8 @@ namespace Strzelecki_Baranowski.DuckApp.BL
                 throw new ArgumentNullException(nameof(type), "Type name cannot be empty.");
 
             if (!System.IO.File.Exists(configPath))
-                throw new FileNotFoundException($"Type name cannot be empty. {configPath}");
+                throw new FileNotFoundException($"The file from the assembly path doesn't exist. {configPath}");
 
-            // Ładowanie assembly
             Assembly asm;
             try
             {
@@ -36,8 +28,6 @@ namespace Strzelecki_Baranowski.DuckApp.BL
                 throw new InvalidOperationException($"Failed to load assembly from {configPath}", ex);
             }
 
-
-            // Pobranie typu
             var ti = asm.GetType(type);
             if (ti == null)
                 throw new TypeLoadException($"Type '{type}' not found in assembly '{configPath}'.");
@@ -48,7 +38,6 @@ namespace Strzelecki_Baranowski.DuckApp.BL
                 throw new InvalidCastException($"Type {type} does not implement IDataAccessObject");
 
             _dao = dao;
-
         }
 
         public IEnumerable<IDuck> GetAllDucks()
@@ -61,44 +50,30 @@ namespace Strzelecki_Baranowski.DuckApp.BL
             return _dao.GetProducers();
         }
 
-
-        public void UpdateDuck(IDuck duck) //TODO upewnić się że foto wskazuje w dobre miejsce
+        public void UpdateDuck(IDuck duck) 
         {
-            //_dao.UpdateDuck(duck.ID, duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
             _dao.UpdateDuck(duck);
-
         }
 
         public void UpdateProducer(IProducer producer)
         {
-            //_dao.UpdateProducer(producer.ID, producer.Name, producer.Website);
             _dao.UpdateProducer(producer);
         }
 
-        public int AddNewDuck(/*string name,
-            int producerID,
-            double price,
-            string photo,
-            string description,
-            Category category*/IDuck duck)
+        public int AddNewDuck(IDuck duck)
         {
-
-            //return _dao.AddDuck(duck.Name, duck.ProducerID, duck.Price, duck.Photo, duck.Description, duck.Category);
             return _dao.AddDuck(duck);
         }
 
-        public int AddNewProducer(/*string name, string website*/IProducer producer)
+        public int AddNewProducer(IProducer producer)
         {
-            return _dao.AddProducer(producer/*name, website*/);
-
+            return _dao.AddProducer(producer);
         }
-
 
         public void DeleteDuck(int id)
         {
             _dao.DeleteDuck(id);
         }
-
 
         public void DeleteProducer(int id)
         {
@@ -114,29 +89,5 @@ namespace Strzelecki_Baranowski.DuckApp.BL
         {
             return _dao.GetNewProducer();
         }
-
-
-        //public IProducer GetProducer(int id)
-        //{
-        //    var producers = _dao.GetProducers();
-        //    var found = producers.FirstOrDefault(x => x.ID == id);
-
-        //    if (found == null)
-        //        throw new KeyNotFoundException($"Producer with ID {id} not found."); //TODO obsługa takich błędów w warstwie UI - co wyświetlić
-
-        //    return found;
-        //}
-
-        //public IEnumerable<IDuck> getAllDucksFromProducer(int id)
-        //{
-        //    return _dao.GetDucks().Where(x => x.ID == id);
-        //}
-
-
-
-        //Dodać metody wstylu getAllDucksFromProducer(id)
-
-
-
     }
 }

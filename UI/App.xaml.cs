@@ -1,11 +1,7 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.Extensions.Configuration;
 using Strzelecki_Baranowski.DuckApp.BL;
-using Strzelecki_Baranowski.DuckApp.UI;
 using Microsoft.Extensions.DependencyInjection;
-using Strzelecki_Baranowski.DuckApp.ViewModels;
 
 namespace Strzelecki_Baranowski.DuckApp.UI
 {
@@ -14,7 +10,6 @@ namespace Strzelecki_Baranowski.DuckApp.UI
     /// </summary>
     public partial class App : Application
     {
-
         private IServiceProvider? serviceProvider;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -26,15 +21,11 @@ namespace Strzelecki_Baranowski.DuckApp.UI
                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                    .Build();
 
-
                 var serviceColl = new ServiceCollection();
-
-                //serviceColl.AddSingleton<IConfiguration>(config);
 
                 serviceColl.AddSingleton<BLC>(provider =>
                 {
                     var section = config.GetSection("Dao");
-
                     return new BLC(section["Path"], section["Type"]);
                 });
 
@@ -47,20 +38,11 @@ namespace Strzelecki_Baranowski.DuckApp.UI
                 mainWindow?.Show();
 
                 base.OnStartup(e);
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
-
-            //var section = config.GetSection("Dao");
-            //var businessLogic = new BLC(section["Path"], section["Type"]);
-
-            //var mainWindow = new MainWindow(businessLogic);
-            //mainWindow.Show();
         }
-
     }
-
 }

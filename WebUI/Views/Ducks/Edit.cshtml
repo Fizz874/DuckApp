@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="col-md-9">
-                                    <label asp-for="PhotoUpload" class="form-label">Wgraj nowe zdjęcie (opcjonalnie)</label>
+                                    <label asp-for="PhotoUpload" class="form-label">Upload new photo (optional)</label>
 
                                     <input asp-for="PhotoUpload"
                                            class="form-control"
@@ -86,7 +86,6 @@
                                            onchange="previewFile(this)" />
 
                                     <span asp-validation-for="PhotoUpload" class="text-danger small"></span>
-                                    <div class="form-text text-muted">Wybranie nowego pliku automatycznie zaktualizuje podgląd po lewej.</div>
                                 </div>
                             </div>
                         </div>
@@ -107,95 +106,54 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
+    <style>
+        .input-validation-error {
+            border: 2px solid #dc3545 !important;
+            background-color: #fff8f8 !important;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
 
+        .field-validation-error {
+            color: #dc3545 !important;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .input-validation-valid {
+            border: 2px solid #198754 !important;
+        }
+    </style>
 
     <script>
-        function previewFile(input) {
-            // Znajdź obrazek i etykietę
-            var preview = document.getElementById('imagePreview');
-            var label = document.getElementById('previewLabel');
-
-            // Pobierz oryginalną ścieżkę (w razie anulowania)
-            var originalSrc = preview.getAttribute('data-original-src');
-
-            if (input.files && input.files[0]) {
-                // Jeśli wybrano plik:
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    // Podmień źródło obrazka na dane z pliku
-                    preview.src = e.target.result;
-                    // Zmień napis pod obrazkiem
-                    label.innerText = "Nowe (Podgląd)";
-                    label.className = "small text-success mt-2 fw-bold";
-                }
-
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                // Jeśli anulowano wybór (brak pliku):
-                preview.src = originalSrc;
-                label.innerText = "Obecne";
-                label.className = "small text-muted mt-2 fw-bold";
-            }
-        }
-    </script>
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
-
-        <style>
-            /* To klasa, którą ASP.NET dodaje automatycznie, gdy jest błąd */
-            .input-validation-error {
-                border: 2px solid #dc3545 !important; /* Czerwona ramka */
-                background-color: #fff8f8 !important; /* Lekko czerwone tło */
-                box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important; /* Czerwona poświata */
-            }
-
-            /* Kolor tekstu błędu */
-            .field-validation-error {
-                color: #dc3545 !important;
-                font-weight: bold;
-                font-size: 0.85em;
-                margin-top: 5px;
-                display: block;
-            }
-
-            /* Zielona ramka, jak jest dobrze (opcjonalnie, dla lepszego efektu) */
-            .input-validation-valid {
-                border: 2px solid #198754 !important; /* Zielona ramka */
-            }
-        </style>
-
-        <script>
-            $(document).ready(function () {
-                // Znajdujemy formularz
-                var form = $("form");
-
-                // Wymuszamy walidację przy każdym zdarzeniu 'input' (czyli przy każdym naciśnięciu klawisza)
-                form.find("input, select, textarea").on("input propertychange", function () {
-                    $(this).valid(); // To ręcznie odpala walidację jQuery
-                });
-
-                // LOGIKA PODGLĄDU ZDJĘCIA (Twoja poprzednia funkcja)
-                window.previewFile = function(input) {
-                    var preview = document.getElementById('imagePreview');
-                    var label = document.getElementById('previewLabel');
-                    var originalSrc = preview.getAttribute('data-original-src');
-
-                    if (input.files && input.files[0]) {
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            preview.src = e.target.result;
-                            label.innerText = "Nowe (Podgląd)";
-                            label.className = "small text-success mt-2 fw-bold";
-                        }
-                        reader.readAsDataURL(input.files[0]);
-                    } else {
-                        preview.src = originalSrc;
-                        label.innerText = "Obecne";
-                        label.className = "small text-muted mt-2 fw-bold";
-                    }
-                };
+        $(document).ready(function () {
+            var form = $("form");
+            form.find("input, select, textarea").on("input propertychange", function () {
+                $(this).valid();
             });
-        </script>
+
+            window.previewFile = function(input) {
+                var preview = document.getElementById('imagePreview');
+                var label = document.getElementById('previewLabel');
+                var originalSrc = preview.getAttribute('data-original-src');
+
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        label.innerText = "New (Preview)";
+                        label.className = "small text-success mt-2 fw-bold";
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.src = originalSrc;
+                    label.innerText = "Current";
+                    label.className = "small text-muted mt-2 fw-bold";
+                }
+            };
+        });
+    </script>
 }

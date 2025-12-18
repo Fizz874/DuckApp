@@ -71,7 +71,7 @@
                                 </div>
 
                                 <div class="col-md-9">
-                                    <label asp-for="PhotoUpload" class="form-label">Wgraj zdjęcie (opcjonalnie)</label>
+                                    <label asp-for="PhotoUpload" class="form-label">Upload photo (optional)</label>
                                     <input asp-for="PhotoUpload"
                                            class="form-control"
                                            type="file"
@@ -128,19 +128,19 @@
             window.previewFile = function(input) {
                 var preview = document.getElementById('imagePreview');
                 var label = document.getElementById('previewLabel');
-                var originalSrc = preview.getAttribute('data-original-src'); // "/photos/0.png"
+                var originalSrc = preview.getAttribute('data-original-src'); 
 
                 if (input.files && input.files[0]) {
                     var reader = new FileReader();
                     reader.onload = function (e) {
                         preview.src = e.target.result;
-                        label.innerText = "Podgląd";
+                        label.innerText = "Prewiev";
                         label.className = "small text-success mt-2 fw-bold";
                     }
                     reader.readAsDataURL(input.files[0]);
                 } else {
                     preview.src = originalSrc;
-                    label.innerText = "Brak zdjęcia";
+                    label.innerText = "No photo";
                     label.className = "small text-muted mt-2 fw-bold";
                 }
             };

@@ -1,32 +1,23 @@
-﻿using Strzelecki_Baranowski.DuckApp.CORE;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 
 namespace Strzelecki_Baranowski.DuckApp.DAO
 {
     public class DAO : IDataAccessObject
     {
-        //DataContext _context;
         public DAO()
         {
-
-            //_context = new DataContext();
             using (var context = new DataContext())
             {
                 context.Database.EnsureCreated();
                 context.SeedData();
             }
-
         }
 
-
-
-
-        public int AddDuck(IDuck duck/*string name, int producerID, double price, string photo, string description, Category category*/)
+        public int AddDuck(IDuck duck)
         {
             using (var context = new DataContext())
             {
-
                 var newEntity = new Duck
                 {
                     Name = duck.Name,
@@ -38,16 +29,14 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
                     ProducerID = duck.ProducerID
                 };
 
-
                 context.Ducks.Add(newEntity);
                 context.SaveChanges();
 
-                return newEntity.ID; // Zwracamy nowe ID nadane przez bazę
+                return newEntity.ID;
             }
         }
 
-
-        public int AddProducer(/*string name, string website*/IProducer producer)
+        public int AddProducer(IProducer producer)
         {
             using (var context = new DataContext())
             {
@@ -94,33 +83,17 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
             return 1;
         }
 
-        //public IEnumerable<IDuck> GetDucks()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
         public IEnumerable<IDuck> GetDucks()
         {
             using (var context = new DataContext())
             {
-                //// .AsNoTracking() przyspiesza pobieranie tylko do odczytu (dla list)
-                //return context.Ducks
-                //    //.Include(d => d.Producer)
-                //    .AsNoTracking()
-                //    .ToList();
-
                 return context.Ducks.AsNoTracking().ToList();
-
             }
-
         }
-
 
         public IDuck GetNewDuck()
         {
             return new Duck();
-            
         }
 
         public IProducer GetNewProducer()
@@ -132,16 +105,11 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
         {
             using (var context = new DataContext())
             {
-                return context.Producers
-                    .AsNoTracking()
-                    .ToList();
+                return context.Producers.AsNoTracking().ToList();
             }
         }
 
-
-
-
-        public int UpdateDuck(IDuck duck/*int id, string? name, int? producerID, double? price, string? photo, string? description, Category? category*/)
+        public int UpdateDuck(IDuck duck)
         {
             using (var context = new DataContext())
             {
@@ -163,7 +131,7 @@ namespace Strzelecki_Baranowski.DuckApp.DAO
             return 1;
         }
 
-        public int UpdateProducer(IProducer producer/*int id, string? name, string? website*/)
+        public int UpdateProducer(IProducer producer)
         {
             using (var context = new DataContext())
             {
