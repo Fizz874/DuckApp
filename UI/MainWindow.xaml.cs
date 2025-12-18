@@ -13,7 +13,6 @@ using System.Windows.Shapes;
 using Strzelecki_Baranowski.DuckApp.INTERFACES;
 using Microsoft.Extensions.Configuration;
 using Strzelecki_Baranowski.DuckApp.BL;
-using Strzelecki_Baranowski.DuckApp.ViewModels;
 
 
 namespace Strzelecki_Baranowski.DuckApp.UI

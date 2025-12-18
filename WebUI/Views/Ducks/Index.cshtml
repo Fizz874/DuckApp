@@ -5,9 +5,6 @@
 @{
     ViewData["Title"] = "Ducks";
 
-    // --- LOGIKA UI (ODPOWIEDNIK TWOICH KONWERTERÓW WPF) ---
-
-    // Konwerter Mode -> Icon
     string GetIcon(FilterMode mode) => mode switch
     {
         FilterMode.Equal => "=",
@@ -21,7 +18,6 @@
         _ => "?"
     };
 
-    // Konwerter Mode -> Color (CSS Style)
     string GetColorStyle(FilterMode mode) => mode switch
     {
         FilterMode.Equal => "color: green; font-weight: 900;",
@@ -35,7 +31,6 @@
         _ => "color: black;"
     };
 
-    // Listy dostępnych trybów dla pętli
     var textModes = new[] { FilterMode.Contains, FilterMode.NotContains, FilterMode.Equal, FilterMode.NotEqual };
     var numberModes = new[] { FilterMode.Equal, FilterMode.NotEqual, FilterMode.Greater, FilterMode.Less, FilterMode.GreaterOrEqual, FilterMode.LessOrEqual };
 }
@@ -237,7 +232,6 @@
                 transform: scale(1.05);
             }
 
-    /* Trick na ostylowanie selecta po wybraniu opcji (działa w części przeglądarek) */
     select option {
         font-weight: bold;
     }

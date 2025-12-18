@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Strzelecki_Baranowski.DuckApp.CORE;
+﻿using Strzelecki_Baranowski.DuckApp.CORE;
 
 namespace Strzelecki_Baranowski.DuckApp.INTERFACES
 {
-    
     public interface IDuck
     {
-
         string Name { get; set; }
         int ID { get; set; }
         int ProducerID { get; set; }
@@ -18,6 +11,5 @@ namespace Strzelecki_Baranowski.DuckApp.INTERFACES
         string Photo {  get; set; }
         string Description { get; set; }
         Category Category { get; set; }
-
     }
 }
